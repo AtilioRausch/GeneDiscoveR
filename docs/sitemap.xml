@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>/404.html</loc>
+  </url>
+  <url>
+    <loc>/authors.html</loc>
+  </url>
+  <url>
+    <loc>/index.html</loc>
+  </url>
+  <url>
+    <loc>/reference/calculate_median_statistics.html</loc>
+  </url>
+  <url>
+    <loc>/reference/calculate_overall_statistics.html</loc>
+  </url>
+  <url>
+    <loc>/reference/index.html</loc>
+  </url>
+  <url>
+    <loc>/reference/plot_OGs_HOGs_per_inflation.html</loc>
+  </url>
+  <url>
+    <loc>/reference/plot_allSpeciesOGs_sOGs_per_inflation.html</loc>
+  </url>
+  <url>
+    <loc>/reference/set_ggplot2_theme.html</loc>
+  </url>
+</urlset>

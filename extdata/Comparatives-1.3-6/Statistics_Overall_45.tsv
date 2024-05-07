@@ -1,0 +1,90 @@
+Number of species	42
+Number of genes	802115
+Number of genes in orthogroups	693869
+Number of unassigned genes	108246
+Percentage of genes in orthogroups	86.5
+Percentage of unassigned genes	13.5
+Number of orthogroups	78222
+Number of species-specific orthogroups	37953
+Number of genes in species-specific orthogroups	180264
+Percentage of genes in species-specific orthogroups	22.5
+Mean orthogroup size	8.9
+Median orthogroup size	3.0
+G50 (assigned genes)	25
+G50 (all genes)	20
+O50 (assigned genes)	8306
+O50 (all genes)	10677
+Number of orthogroups with all species present	35
+Number of single-copy orthogroups	0
+Date	2023-10-07
+Orthogroups file	Orthogroups.tsv
+Unassigned genes file	Orthogroups_UnassignedGenes.tsv
+Per-species statistics	Statistics_PerSpecies.tsv
+Overall statistics	Statistics_Overall.tsv
+Orthogroups shared between species	Orthogroups_SpeciesOverlaps.tsv
+
+Average number of genes per-species in orthogroup	Number of orthogroups	Percentage of orthogroups	Number of genes	Percentage of genes
+<1	75784	96.9	533691	76.9
+'1	2057	2.6	109353	15.8
+'2	229	0.3	23029	3.3
+'3	84	0.1	12047	1.7
+'4	39	0.0	7250	1.0
+'5	16	0.0	3647	0.5
+'6	3	0.0	835	0.1
+'7	2	0.0	633	0.1
+'8	4	0.0	1469	0.2
+'9	0	0.0	0	0.0
+'10	1	0.0	433	0.1
+11-15	3	0.0	1482	0.2
+16-20	0	0.0	0	0.0
+21-50	0	0.0	0	0.0
+51-100	0	0.0	0	0.0
+101-150	0	0.0	0	0.0
+151-200	0	0.0	0	0.0
+201-500	0	0.0	0	0.0
+501-1000	0	0.0	0	0.0
+'1001+	0	0.0	0	0.0
+
+Number of species in orthogroup	Number of orthogroups
+1	37953
+2	17305
+3	5514
+4	2449
+5	1390
+6	848
+7	721
+8	560
+9	504
+10	452
+11	364
+12	299
+13	291
+14	246
+15	237
+16	252
+17	253
+18	256
+19	328
+20	411
+21	459
+22	549
+23	658
+24	689
+25	707
+26	647
+27	602
+28	493
+29	414
+30	354
+31	303
+32	252
+33	227
+34	202
+35	181
+36	160
+37	169
+38	149
+39	140
+40	110
+41	89
+42	35

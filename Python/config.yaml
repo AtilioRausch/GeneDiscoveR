@@ -1,0 +1,10 @@
+#imin is the minimum inflation value to be used in the clustering
+imin: 1.3
+#imax is the maximum inflation value to be used in the clustering
+imax: 6.1
+#istep is the step size to screen the inflation values
+istep: 0.1
+#Path to the directory containing the proteomes
+proteomes: "/path/to/proteomes"
+#threads is the number of threads per core
+threads: 4
