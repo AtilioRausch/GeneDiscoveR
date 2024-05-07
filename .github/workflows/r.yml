@@ -19,6 +19,7 @@ permissions:
 
 jobs:
   build:
+    using: 'node20'
     runs-on: self-hosted
     strategy:
       matrix:
