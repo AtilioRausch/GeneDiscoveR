@@ -16,14 +16,13 @@ on:
 
 permissions:
   contents: read
-
 jobs:
   build:
-    runs-on: macos-latest
+    runs-on: self-hosted
     strategy:
       matrix:
         r-version: ['3.6.3', '4.1.1']
-
+        node-version: [20]
     steps:
       - uses: actions/checkout@v4
       - name: Set up R ${{ matrix.r-version }}
