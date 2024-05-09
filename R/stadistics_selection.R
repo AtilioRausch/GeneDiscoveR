@@ -188,4 +188,3 @@ set_ggplot2_theme <- function() {
     )
     theme_set(theme)
 }
-
