@@ -14,19 +14,21 @@
 #' @import tidyr
 #' @import readr
 #' @export
-calculate_overall_statistics <- function(overallDirectory = NULL, Nrun = 48) {
-    if (is.null(overallDirectory)) {
-        stop("Please provide the overallDirectory parameter.")
+calculate_overall_statistics <- function(PhenoRobject = NULL) {
+    if (is.null(PhenoRobject) || is.null(PhenoRobject$overallsDir)) {
+        stop("Please provide the PhenoRobject parameter and make sure PhenoRobject$overallsDir is not null.")
     }
-    if (Nrun <= 9) {
-        indexs <- paste0("0", seq(1, Nrun))
+
+    if (PhenoRobject$Nrun <= 9) {
+        indexs <- paste0("0", seq(1, PhenoRobject$Nrun))
     } else {
         indexs <- paste0("0", seq(1, 9))
-        indexs <- c(indexs, seq(10, Nrun))
+        indexs <- c(indexs, seq(10, PhenoRobject$Nrun))
     }
+
     metrics <- NULL
     for (index in indexs) {
-        stats <- paste0(overallDirectory, "/Statistics_Overall_", index, ".tsv")
+        stats <- paste0(PhenoRobject$overallsDir, "/Statistics_Overall_", index, ".tsv")
         stats <- suppressMessages(read_tsv(stats, col_names = FALSE, skip = 10, n_max = 8))
         metrics <- rbind(metrics, cbind(stats[1, 2], stats[2, 2], stats[3, 2], stats[4, 2],
                                                                         stats[5, 2], stats[6, 2], stats[7, 2], stats[8, 2]))
@@ -35,8 +37,10 @@ calculate_overall_statistics <- function(overallDirectory = NULL, Nrun = 48) {
     colnames(metrics) <- c("mean", "median", "G50 (assigned genes)",
                                                  "G50 (all genes)", "O50 (assigned genes)",
                                                  "O50 (all genes)", "All species OG", "sOGs")
-    return(metrics)
+    PhenoRobject$runsData$overallMetrics <- metrics
+    return(PhenoRobject)
 }
+
 #' Calculate statistics for selected files
 #'
 #' This function reads in a set of files that match the pattern "^N0" and calculates
@@ -56,14 +60,14 @@ calculate_overall_statistics <- function(overallDirectory = NULL, Nrun = 48) {
 #' medians <- calculate_median_statistics(nsDirectory = N0sDir)
 #' 
 #' @export
-calculate_median_statistics <- function(nsDirectory = NULL) {
-    if (is.null(nsDirectory)) {
-        stop("Please provide the nsDirectory parameter.")
+calculate_median_statistics <- function(PhenoRobject = NULL) {
+    if (is.null(PhenoRobject) || is.null(PhenoRobject$N0sDir)) {
+        stop("Please provide the PhenoRobject parameter and make sure PhenoRobject$N0sDir is not null.")
     }
     medians <- NULL
     allMedians <- NULL
     
-    for (file in list.files(path = nsDirectory, pattern = "^N0", full.names = TRUE)) {
+    for (file in list.files(path = PhenoRobject$N0sDir, pattern = "^N0", full.names = TRUE)) {
         table <- suppressMessages(read_tsv(file, progress = FALSE))
         N <- table %>% 
             group_by(OG) %>% 
@@ -79,7 +83,9 @@ calculate_median_statistics <- function(nsDirectory = NULL) {
     }
     medians <- medians %>% 
         as.data.frame(medians)
-    return(medians)
+    PhenoRobject$runsData$medians <- medians
+    
+    return(PhenoRobject)
 }
 
 #' Plot Metrics of Orthogroups
@@ -95,17 +101,17 @@ calculate_median_statistics <- function(nsDirectory = NULL) {
 #' 
 #' @import ggplot2
 #' @export
-plot_allSpeciesOGs_sOGs_per_inflation <- function(metrics = NULL, Nrun = 48) {
-    if (is.null(metrics)) {
-        stop("Please provide the metrics parameter.")
+plot_allSpeciesOGs_sOGs_per_inflation <- function(PhenoRobject=NULL) {
+    if (is.null(PhenoRobject) || is.null(PhenoRobject$runsData$overallMetrics)) {
+        stop("Please provide the PhenoRobject parameter and make sure PhenoRobject$runsData$overallMetrics is not null.")
     }
-    plot <- ggplot(metrics) +
-        geom_line(aes(x=seq(1, Nrun), y=as.numeric(`All species OG`), color="All species OG"), alpha=0.5) +
-        geom_point(aes(x=seq(1, Nrun), y=as.numeric(`All species OG`), color="All species OG")) +
-        geom_line(aes(x=seq(1, Nrun), y=as.numeric(`sOGs`), color="sOGs"), alpha=0.5) +
-        geom_point(aes(x=seq(1, Nrun), y=as.numeric(`sOGs`), color="sOGs")) +
+    plot <- ggplot(PhenoRobject$runsData$overallMetrics) +
+        geom_line(aes(x=seq(1, PhenoRobject$Nrun), y=as.numeric(`All species OG`), color="All species OG"), alpha=0.5) +
+        geom_point(aes(x=seq(1, PhenoRobject$Nrun), y=as.numeric(`All species OG`), color="All species OG")) +
+        geom_line(aes(x=seq(1, PhenoRobject$Nrun), y=as.numeric(`sOGs`), color="sOGs"), alpha=0.5) +
+        geom_point(aes(x=seq(1, PhenoRobject$Nrun), y=as.numeric(`sOGs`), color="sOGs")) +
         labs(title="Metrics of Orthogroups", x="Inflation value (I)", y="Number of orthogroups (OG)") +
-        scale_x_continuous(breaks=seq(1, Nrun), labels=as.character(seq(1.3, 6, 0.1))) +
+        scale_x_continuous(breaks=seq(1, PhenoRobject$Nrun), labels=as.character(seq(1.3, 6, 0.1))) +
         scale_color_jama() +
         guides(color=guide_legend(title="Metrics")) +
         scale_y_continuous(breaks=seq(0, 1000, 10), labels=as.character(seq(0, 1000, 10)))
@@ -127,23 +133,23 @@ plot_allSpeciesOGs_sOGs_per_inflation <- function(metrics = NULL, Nrun = 48) {
 #' @import ggplot2
 #' @import ggsci
 #' @export
-plot_OGs_HOGs_per_inflation <- function(medians = NULL, Nrun = 48) {
-    if (is.null(medians)) {
-        stop("Please provide the medians parameter.")
+plot_OGs_HOGs_per_inflation <- function(PhenoRobject=NULL) {
+    if (is.null(PhenoRobject) || is.null(PhenoRobject$runsData$medians)) {
+        stop("Please provide the PhenoRobject parameter and make sure PhenoRobject$runsData$medians is not null.")
     }
-    plot <- ggplot(medians) +
-        geom_line(aes(x = seq(1, Nrun), y = as.numeric(nOGstotal), color = "Number of OGs")) +
-        geom_point(aes(x = seq(1, Nrun), y = as.numeric(nOGstotal), color = "Number of OGs")) +
-        geom_line(aes(x = seq(1, Nrun), y = as.numeric(nHOGstotal), color = "Number of HOGs")) +
-        geom_point(aes(x = seq(1, Nrun), y = as.numeric(nHOGstotal), color = "Number of HOGs")) +
+    plot <- ggplot(PhenoRobject$runsData$medians) +
+        geom_line(aes(x = seq(1, PhenoRobject$Nrun), y = as.numeric(nOGstotal), color = "Number of OGs")) +
+        geom_point(aes(x = seq(1, PhenoRobject$Nrun), y = as.numeric(nOGstotal), color = "Number of OGs")) +
+        geom_line(aes(x = seq(1, PhenoRobject$Nrun), y = as.numeric(nHOGstotal), color = "Number of HOGs")) +
+        geom_point(aes(x = seq(1, PhenoRobject$Nrun), y = as.numeric(nHOGstotal), color = "Number of HOGs")) +
         labs(title = "Metrics of Orthogroups and HOGs", x = "Inflation value (I)", y = "Count") +
-        scale_x_continuous(breaks = seq(1, Nrun), labels = as.character(seq(1.3, 6, 0.1))) +
+        scale_x_continuous(breaks = seq(1, PhenoRobject$Nrun), labels = as.character(seq(1.3, 6, 0.1))) +
         scale_color_jama() +
         guides(color = guide_legend(title = "Metrics")) +
         scale_y_continuous(
-            limits = c(as.numeric(min(medians$nOGstotal)), as.numeric(max(medians$nHOGstotal))),
-            breaks = seq(as.numeric(min(medians$nOGstotal)), as.numeric(max(medians$nHOGstotal)), 2000),
-            labels = as.character(seq(as.numeric(min(medians$nOGstotal)), as.numeric(max(medians$nHOGstotal)), 2000))
+            limits = c(as.numeric(min(PhenoRobject$runsData$medians$nOGstotal)), as.numeric(max(PhenoRobject$runsData$medians$nHOGstotal))),
+            breaks = seq(as.numeric(min(PhenoRobject$runsData$medians$nOGstotal)), as.numeric(max(PhenoRobject$runsData$medians$nHOGstotal)), 2000),
+            labels = as.character(seq(as.numeric(min(PhenoRobject$runsData$medians$nOGstotal)), as.numeric(max(PhenoRobject$runsData$medians$nHOGstotal)), 2000))
         )
     return(plot)
 }
@@ -188,3 +194,5 @@ set_ggplot2_theme <- function() {
     )
     theme_set(theme)
 }
+
+

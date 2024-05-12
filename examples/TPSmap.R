@@ -13,39 +13,62 @@
 # Install and import PhenoR package
 devtools::install_github("AtilioRausch/PhenoR")
 library(PhenoR)
+library(tidyverse)
+library(ggsci)
 
 # Directory where the data is located
-overallsDir <- system.file("extdata", "Comparatives-1.3-6", package = "PhenoR")
-N0sDir <- system.file("extdata", "N0-1.3-6")
+overallsDir <- "/home/atilio/Escritorio/LiverwortGitHub/PhenoR/inst/extdata/Comparatives-1dot3-6/"
+N0sDir <- "/home/atilio/Escritorio/LiverwortGitHub/PhenoR/inst/extdata/N0-1dot3-6/"
+genomesTSV <- "inst/extdata/genomes.tsv"
+
+PhenoRobject <- PhenoR(
+    overallsDir = overallsDir,
+    N0sDir = N0sDir,
+    dataFile = genomesTSV,
+    minInflation = 1.3,
+    maxInflation = 6,
+    stepInflation = 0.1
+)
+
+# system.file("extdata", "Comparatives-1.3-6", package = "PhenoR")
+# system.file("extdata", "N0-1.3-6", package = "PhenoR")
 
 # Calculate statistics for each execution of Orthofinder for selecting the best inflation value
-metrics <- PhenoR::calculate_overall_statistics(overallDirectory = overallsDir, Nrun = 48)
-medians <- PhenoR::calculate_median_statistics(nsDirectory = N0sDir)
+PhenoRobject <- calculate_overall_statistics(PhenoRobject)
+PhenoRobject <- calculate_median_statistics(PhenoRobject)
 
 # Plot the data -----------------------------------------------------------
-PhenoR::set_ggplot2_theme()
-allSpeciesOGs <- PhenoR::plot_allSpeciesOGs_sOGs_per_inflation(metrics)
-OGsAndHOGs <- PhenoR::plot_OGs_HOGs_per_inflation(medians, Nrun = 48)
+set_ggplot2_theme()
+plotAllSpeciesOGs <- plot_allSpeciesOGs_sOGs_per_inflation(PhenoRobject)
+plotOGsAndHOGs <- plot_OGs_HOGs_per_inflation(PhenoRobject)
 
 # Read N0 file (result of Orthofinder)-----------------------------------------------------------
+PhenoRobject <- set_run_active(PhenoRobject, InflationValue = 1.8)
 
-N0 <- read_tsv(file = "N0.tsv")
-genomesTSV <- refactor_genomes_table(file = "/home/atilio/Escritorio/Code/genomes.tsv")
-oneInSpecializedCellG <- select_species_by_OBtype(genomes = genomesTSV, type = "one in specialized cell", origin = "G")
-manyInAllCellsTG <- select_species_by_OBtype(genomes = genomesTSV, type = "many in all cells", origin = "G")
-onePerCellG <- select_species_by_OBtype(genomes = genomesTSV, type = "one per cell", origin = "G")
-noneG <- select_species_by_OBtype(genomes = genomesTSV, type = "none", origin = "G")
-
-countHOG <- countHOG %>%
-    rowwise() %>%
-    mutate(
-        NInSpecializedCell = sum(!is.na(c_across(all_of(oneInSpecializedCellG)))),
-        NmanyInAllCells = sum(!is.na(c_across(all_of(manyInAllCellsTG))))
-    )
-countHOG <- countHOG %>% mutate(
-    pvalueFisherPerType = fisher.test(matrix(c(NInSpecializedCell, NmanyInAllCells, length(oneInSpecializedCellG) - NInSpecializedCell, length(manyInAllCellsTG) - NmanyInAllCells), nrow = 2, byrow = T))$p.value,
-    oddRatioFisherPerType = fisher.test(matrix(c(NInSpecializedCell, NmanyInAllCells, length(oneInSpecializedCellG) - NInSpecializedCell, length(manyInAllCellsTG) - NmanyInAllCells), nrow = 2, byrow = T))$estimate
+PhenoRobject <- select_species_by_phenotype(
+    PhenoRobject = PhenoRobject,
+    columnPhenotype = `Oil-body-type`,
+    columnOrthofinderID = `OrthofinderID`,
+    type = "one in specialized cell"
 )
+PhenoRobject <- select_species_by_phenotype(
+    PhenoRobject = PhenoRobject,
+    columnPhenotype = `Oil-body-type`,
+    columnOrthofinderID = `OrthofinderID`,
+    type = "many in all cells"
+)
+PhenoRobject <- select_species_by_phenotype(
+    PhenoRobject = PhenoRobject,
+    columnPhenotype = `Oil-body-type`,
+    columnOrthofinderID = `OrthofinderID`,
+    type = "none"
+)
+
+# PhenoRobject <- clean_phenotypes(PhenoRobject)
+
+PhenoRobject <- gene_identification_by_phenotype(formula = as.formula("one in specialized cell" ~ "many in all cells"), PhenoRobject = PhenoRobject, statistic = "Fisher", name = "PerType")
+PhenoRobject <- select_genes_by_phenotype(PhenoRobject, thresholdPValue = 0.05, thresholdOddsRatio = 1)
+
 filter0.05 <- countHOG %>% filter(pvalueFisher <= 0.05 && oddRatioFisher > 1)
 F1anno <- map_annotation(tableOG_HOG = filter0.05, tableAnnotation = funcAnnotation)
 F1anno <- split_annotation_per_gene(tableOG_HOG_Anno = F1anno)
