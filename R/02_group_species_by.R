@@ -32,20 +32,3 @@ select_species_by_phenotype <- function(PhenoRobject = NULL, columnPhenotype = `
 
     return(PhenoRobject)
 }
-pnameColumn3 <- paste0("fisherResult", name)
-            PhenoRobject$RunActive$N0Active <- PhenoRobject$RunActive$N0Active %>%
-                rowwise() %>%
-                mutate(
-                    !!nameColumn3 := list(fisher.test(matrix(
-                        c(
-                            !!sym(nameColumn1),
-                            !!sym(nameColumn2)
-                        ),
-                        nrow = 2, byrow = TRUE
-                    ),
-                    length(PhenoRobject$Phenotypes[[formula[[2]]]]) - !!sym(nameColumn1),
-                    length(PhenoRobject$Phenotypes[[formula[[3]]]]) - !!sym(nameColumn2)
-                    ))),
-                    !!paste0("pvalueFisher", name) := nameColumn3[[1]],
-                    !!paste0("oddsRatioFisher", name) := nameColumn3[[2]]
-                )objectPhenoRobject

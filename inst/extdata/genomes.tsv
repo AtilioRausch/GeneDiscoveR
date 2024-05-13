@@ -1,46 +1,43 @@
 PlantGroup	Order	Species	Oil-body-presence	Oil-body-type	Ndna	OrthofinderID
-Marchantiophyta (liverworts)	Treubiales	Treubia lacunosa	1	one in specialized cell	1016	1016-Treubia_lacunosa
-Marchantiophyta (liverworts)	Sphaerocarpales	Sphaerocarpos donnellii	0	none	M158	M158-Sphaerocarpos_donnellii
-Marchantiophyta (liverworts)	Ptilidiales	Ptilidium ciliare	1	many in all cells	225	225-Ptilidium_ciliare
-Marchantiophyta (liverworts)	Porellales	Porella caespitans var. nipponica	1	many in all cells	1017	1017-Porella_caespitans_var_nipponica
-Marchantiophyta (liverworts)	Porellales	Porella chinensis	1	many in all cells	1025	1025-Porella_chinensis
-Marchantiophyta (liverworts)	Porellales	Gackstroemia magellanica	1	many in all cells	604	604-Gackstroemia_magellanica
-Marchantiophyta (liverworts)	Porellales	Porella platyphylla	1	many in all cells	630	630-Porella_platyphylla
-Marchantiophyta (liverworts)	Porellales	Acrolejeunea sandvicensis	1	many in all cells	888	888-Acrolejeunea_sandvicensis
-Marchantiophyta (liverworts)	Porellales	Frullania moniliata	1	many in all cells	957	957-Frullania_moniliata
-Marchantiophyta (liverworts)	Pleuroziales	Pleurozia purpurea	1	many in all cells	891	891-Pleurozia_purpurea
-Marchantiophyta (liverworts)	Pelliales	Noteroclada confluens	1	many in all cells	625	625-Noteroclada_confluens
-Marchantiophyta (liverworts)	Pallaviciniales	Pallavicinia ambigua	1	many in all cells	912	912-Pallavicinia_ambigua
-Marchantiophyta (liverworts)	Metzgeriales	Metzgeria furcata	0	none	368	368-Metzgeria_furcata
-Marchantiophyta (liverworts)	Metzgeriales	Metzgeria hamata	1	many in all cells	905	905-Metzgeria_hamata
-Marchantiophyta (liverworts)	Marchantiales	Conocephalum conicum	1	one in specialized cell	664	664-Conocephalum_conicum
-Marchantiophyta (liverworts)	Marchantiales	Cyathodium cavernarum	1	one in specialized cell	908	908-Cyathodium_cavernarum
-Marchantiophyta (liverworts)	Marchantiales	Ricciocarpos natans	1	one in specialized cell	909	909-Ricciocarpos_natans
-Marchantiophyta (liverworts)	Marchantiales	Plagiochasma appendiculatum	1	one in specialized cell	952	952-Plagiochasma_appendiculatum
-Marchantiophyta (liverworts)	Marchantiales	Riccia cavernosa	0	none	653	653-Riccia_cavernosa
-Marchantiophyta (liverworts)	Lunulariales	Lunularia cruciata	1	one in specialized cell	231	231-Lunularia_cruciata
-Marchantiophyta (liverworts)	Jungermanniales	Jungermannia erectum	1	many in all cells	955	955-Jungermannia_erectum
-Marchantiophyta (liverworts)	Jungermanniales	Plagiochila semidecurrens	1	many in all cells	369	369-Plagiochila_semidecurrens
-Marchantiophyta (liverworts)	Jungermanniales	Bazzania tridens	1	many in all cells	1026	1026-Bazzania_tridens
-Marchantiophyta (liverworts)	Jungermanniales	Odontoschisma sphagni	1	many in all cells	343	343-Odontoschisma_sphagni
-Marchantiophyta (liverworts)	Jungermanniales	Scapania nepalensis	1	many in all cells	359	359-Scapania_nepalensis
-Marchantiophyta (liverworts)	Jungermanniales	Vetaforma dusenii	1	many in all cells	620	620-Vetaforma_dusenii
-Marchantiophyta (liverworts)	Jungermanniales	Plagiochila sp.	1	many in all cells	621	621-Plagiochila_sp
-Marchantiophyta (liverworts)	Jungermanniales	Mesoptychia sp.	1	many in all cells	623	623-Mesoptychia_sp
-Marchantiophyta (liverworts)	Jungermanniales	Acrobolbus urvilleanus	1	many in all cells	626	626-Acrobolbus_urvilleanus
-Marchantiophyta (liverworts)	Jungermanniales	Herbertus kurzii	1	many in all cells	906	906-Herbertus_kurzii
-Marchantiophyta (liverworts)	Jungermanniales	Lepidozia reptans	1	many in all cells	961	961-Lepidozia_reptans
-Marchantiophyta (liverworts)	Jungermanniales	Plicanthus hirtellus	1	many in all cells	963	963-Plicanthus_hirtellus
-Marchantiophyta (liverworts)	Jungermanniales	Tetralophozia filiformis	1	many in all cells	965	965-Tetralophozia_filiformis
-Marchantiophyta (liverworts)	Jungermanniales	Tritomaria exsectiformis	1	many in all cells	966	966-Tritomaria_exsectiformis
-Marchantiophyta (liverworts)	Haplomitriales	Haplomitrium mnioides	1	many in all cells	302	302-Haplomitrium_mnioides
-Marchantiophyta (liverworts)	Fossombroniales	Fossombronia cristula	1	many in all cells	889	889-Fossombronia_cristula
-Marchantiophyta (liverworts)	Blasiales	Blasia pusilla	0	none	890	890-Blasia_pusilla
-Marchantiophyta (liverworts)	Blasiales	Blasia pusilla	0	none	349	349-Blasia_pusilla
-Marchantiophyta (liverworts)	Marchantiales	Marchantia paleacea	1	one in specialized cell	MAPA	MAPA-Marchantia_paleacea
-Marchantiophyta (liverworts)	Marchantiales	Marchantia polymorpha rudelaris	1	one in specialized cell	MpTAKv6	MpTAKv6-Marchantia_polymorpha_rudelaris
-Marchantiophyta (liverworts)	Marchantiales	Marchantia polymorpha montivagans	1	one in specialized cell	MpMON	MpMON-Marchantia_polymorpha_montivagans
-Marchantiophyta (liverworts)	Marchantiales	Marchantia polymorpha polymorpha	1	one in specialized cell	MpPOL	MpPOL-sherTest <- fisher.test(matrix(c(paste0("N_", str_replace_all(" ", "_", formula[[2]])), str_replace_all(pattern = " ", replacement = "_", formula[[3]]), 
-                      length(PhenoRobject$Phenotypes[[formula[[2]]]]) - paste0("N_", str_replace_all(pattern = " ", replacement = "_", formula[[2]]))), 
-    length(PhenoRobject$Phenotypes[[formula[[3]]]]) - paste0("N_", str_replace_all(pattern = " ", replacement = "_", formula[[3]])))
-    ,nrow = 2, byrow = TRUE))e!!PerType!!Marchantia_polymorpha_polymorpha
+Marchantiophyta (liverworts)	Treubiales	Treubia lacunosa	1	one_in_specialized_cell	1016	1016-Treubia_lacunosa
+Marchantiophyta (liverworts)	Sphaerocarpales	Sphaerocarpos donnellii	0	noneOB	M158	M158-Sphaerocarpos_donnellii
+Marchantiophyta (liverworts)	Ptilidiales	Ptilidium ciliare	1	many_in_all_cells	225	225-Ptilidium_ciliare
+Marchantiophyta (liverworts)	Porellales	Porella caespitans var. nipponica	1	many_in_all_cells	1017	1017-Porella_caespitans_var_nipponica
+Marchantiophyta (liverworts)	Porellales	Porella chinensis	1	many_in_all_cells	1025	1025-Porella_chinensis
+Marchantiophyta (liverworts)	Porellales	Gackstroemia magellanica	1	many_in_all_cells	604	604-Gackstroemia_magellanica
+Marchantiophyta (liverworts)	Porellales	Porella platyphylla	1	many_in_all_cells	630	630-Porella_platyphylla
+Marchantiophyta (liverworts)	Porellales	Acrolejeunea sandvicensis	1	many_in_all_cells	888	888-Acrolejeunea_sandvicensis
+Marchantiophyta (liverworts)	Porellales	Frullania moniliata	1	many_in_all_cells	957	957-Frullania_moniliata
+Marchantiophyta (liverworts)	Pleuroziales	Pleurozia purpurea	1	many_in_all_cells	891	891-Pleurozia_purpurea
+Marchantiophyta (liverworts)	Pelliales	Noteroclada confluens	1	many_in_all_cells	625	625-Noteroclada_confluens
+Marchantiophyta (liverworts)	Pallaviciniales	Pallavicinia ambigua	1	many_in_all_cells	912	912-Pallavicinia_ambigua
+Marchantiophyta (liverworts)	Metzgeriales	Metzgeria furcata	0	noneOB	368	368-Metzgeria_furcata
+Marchantiophyta (liverworts)	Metzgeriales	Metzgeria hamata	1	many_in_all_cells	905	905-Metzgeria_hamata
+Marchantiophyta (liverworts)	Marchantiales	Conocephalum conicum	1	one_in_specialized_cell	664	664-Conocephalum_conicum
+Marchantiophyta (liverworts)	Marchantiales	Cyathodium cavernarum	1	one_in_specialized_cell	908	908-Cyathodium_cavernarum
+Marchantiophyta (liverworts)	Marchantiales	Ricciocarpos natans	1	one_in_specialized_cell	909	909-Ricciocarpos_natans
+Marchantiophyta (liverworts)	Marchantiales	Plagiochasma appendiculatum	1	one_in_specialized_cell	952	952-Plagiochasma_appendiculatum
+Marchantiophyta (liverworts)	Marchantiales	Riccia cavernosa	0	noneOB	653	653-Riccia_cavernosa
+Marchantiophyta (liverworts)	Lunulariales	Lunularia cruciata	1	one_in_specialized_cell	231	231-Lunularia_cruciata
+Marchantiophyta (liverworts)	Jungermanniales	Jungermannia erectum	1	many_in_all_cells	955	955-Jungermannia_erectum
+Marchantiophyta (liverworts)	Jungermanniales	Plagiochila semidecurrens	1	many_in_all_cells	369	369-Plagiochila_semidecurrens
+Marchantiophyta (liverworts)	Jungermanniales	Bazzania tridens	1	many_in_all_cells	1026	1026-Bazzania_tridens
+Marchantiophyta (liverworts)	Jungermanniales	Odontoschisma sphagni	1	many_in_all_cells	343	343-Odontoschisma_sphagni
+Marchantiophyta (liverworts)	Jungermanniales	Scapania nepalensis	1	many_in_all_cells	359	359-Scapania_nepalensis
+Marchantiophyta (liverworts)	Jungermanniales	Vetaforma dusenii	1	many_in_all_cells	620	620-Vetaforma_dusenii
+Marchantiophyta (liverworts)	Jungermanniales	Plagiochila sp.	1	many_in_all_cells	621	621-Plagiochila_sp
+Marchantiophyta (liverworts)	Jungermanniales	Mesoptychia sp.	1	many_in_all_cells	623	623-Mesoptychia_sp
+Marchantiophyta (liverworts)	Jungermanniales	Acrobolbus urvilleanus	1	many_in_all_cells	626	626-Acrobolbus_urvilleanus
+Marchantiophyta (liverworts)	Jungermanniales	Herbertus kurzii	1	many_in_all_cells	906	906-Herbertus_kurzii
+Marchantiophyta (liverworts)	Jungermanniales	Lepidozia reptans	1	many_in_all_cells	961	961-Lepidozia_reptans
+Marchantiophyta (liverworts)	Jungermanniales	Plicanthus hirtellus	1	many_in_all_cells	963	963-Plicanthus_hirtellus
+Marchantiophyta (liverworts)	Jungermanniales	Tetralophozia filiformis	1	many_in_all_cells	965	965-Tetralophozia_filiformis
+Marchantiophyta (liverworts)	Jungermanniales	Tritomaria exsectiformis	1	many_in_all_cells	966	966-Tritomaria_exsectiformis
+Marchantiophyta (liverworts)	Haplomitriales	Haplomitrium mnioides	1	many_in_all_cells	302	302-Haplomitrium_mnioides
+Marchantiophyta (liverworts)	Fossombroniales	Fossombronia cristula	1	many_in_all_cells	889	889-Fossombronia_cristula
+Marchantiophyta (liverworts)	Blasiales	Blasia pusilla	0	noneOB	890	890-Blasia_pusilla
+Marchantiophyta (liverworts)	Blasiales	Blasia pusilla	0	noneOB	349	349-Blasia_pusilla
+Marchantiophyta (liverworts)	Marchantiales	Marchantia paleacea	1	one_in_specialized_cell	MAPA	MAPA-Marchantia_paleacea
+Marchantiophyta (liverworts)	Marchantiales	Marchantia polymorpha rudelaris	1	one_in_specialized_cell	MpTAKv6	MpTAKv6-Marchantia_polymorpha_rudelaris
+Marchantiophyta (liverworts)	Marchantiales	Marchantia polymorpha montivagans	1	one_in_specialized_cell	MpMON	MpMON-Marchantia_polymorpha_montivagans
+Marchantiophyta (liverworts)	Marchantiales	Marchantia polymorpha polymorpha	1	one_in_specialized_cell	MpPOL	MpPOL-Marchantia_polymorpha_polymorpha

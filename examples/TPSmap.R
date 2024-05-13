@@ -49,59 +49,73 @@ PhenoRobject <- select_species_by_phenotype(
     PhenoRobject = PhenoRobject,
     columnPhenotype = `Oil-body-type`,
     columnOrthofinderID = `OrthofinderID`,
-    type = "one in specialized cell"
+    type = "one_in_specialized_cell"
 )
 PhenoRobject <- select_species_by_phenotype(
     PhenoRobject = PhenoRobject,
     columnPhenotype = `Oil-body-type`,
     columnOrthofinderID = `OrthofinderID`,
-    type = "many in all cells"
+    type = "many_in_all_cells"
 )
 PhenoRobject <- select_species_by_phenotype(
     PhenoRobject = PhenoRobject,
     columnPhenotype = `Oil-body-type`,
     columnOrthofinderID = `OrthofinderID`,
-    type = "none"
+    type = "noneOB"
 )
 
 # PhenoRobject <- clean_phenotypes(PhenoRobject)
 
-PhenoRobject <- gene_identification_by_phenotype(formula = as.formula("one in specialized cell" ~ "many in all cells"), PhenoRobject = PhenoRobject, statistic = "Fisher", name = "PerType")
-PhenoRobject <- select_genes_by_phenotype(PhenoRobject, thresholdPValue = 0.05, thresholdOddsRatio = 1)
+# To do
+# PhenoRobject <- clean_identification(PhenoRobject)
 
-filter0.05 <- countHOG %>% filter(pvalueFisher <= 0.05 && oddRatioFisher > 1)
-F1anno <- map_annotation(tableOG_HOG = filter0.05, tableAnnotation = funcAnnotation)
-F1anno <- split_annotation_per_gene(tableOG_HOG_Anno = F1anno)
-F1anno <- filter_oneGene_per_OG_HOG(tableOG_HOG = F1anno)
-filter0.05 <- merge(filter0.05, F1anno, by = c("OG", "HOG"), all = T)
+PhenoRobject <- gene_identification_by_phenotype(
+    PhenoRobject = PhenoRobject,
+    formula = as.formula("noneOB ~ one_in_specialized_cell + many_in_all_cells"),
+    statistic = "Fisher",
+    name = "OBpresence"
+)
+PhenoRobject <- gene_identification_by_phenotype(
+    PhenoRobject = PhenoRobject,
+    formula = as.formula("many_in_all_cells ~ one_in_specialized_cell"),
+    statistic = "Fisher",
+    name = "PerType"
+)
 
+PhenoRobject <- select_genes_by_phenotype(PhenoRobject,
+    pvalue = 0.05,
+    oddsRatio = 1,
+    sign = ">=",
+    name = "OBpresence"
+)
+# PhenoRobject <- select_genes_by_phenotype(PhenoRobject,
+#     pvalue = 0.05,
+#     oddsRatio = 1,
+#     sign = ">=",
+#     name = "PerType"
+# )
 
+View(PhenoRobject$Identification)
+View(PhenoRobject$FilteredGenes[[1]]$table)
+
+PhenoRobject <- set_annotation_file(PhenoRobject, annotationFile = "inst/extdata/MpTak_v6.1_func_annotation_1line.tsv")
+
+indexFilteredGenes <- select_filtered_gene_index(PhenoRobject, name = "OBpresence", pvalue = 0.05, oddsRatio = 1, sign = ">=")
+PhenoRobject <- map_annotation(
+    PhenoRobject = PhenoRobject,
+    indexFilteredGenes = indexFilteredGenes,
+    specieWithAnnotation = "MpTAKv6-Marchantia_polymorpha_rudelaris"
+)
+log(countHOG$oddsRatioFisherOBpresence)
+View(PhenoRobject$FilteredGenes[[indexFilteredGenes]]$table)
+countHOG <- PhenoRobject$RunActive$N0Active
 g1 <- ggplot() +
-    geom_point(aes(x = -log(countHOG$pvalueFisherPerType), y = countHOG$logOddRatioPerType), color = "#696D7D") +
-    geom_point(aes(
-        x = -log(countHOG$pvalueFisherPerType[which(str_detect(countHOG$`MpTAKv6-Marchantia_polymorpha_rudelaris`, paste(markersClusterOBfiltavg_log2FC$gene, collapse = "|")))]),
-        y = countHOG$logOddRatioPerType[which(str_detect(countHOG$`MpTAKv6-Marchantia_polymorpha_rudelaris`, paste(markersClusterOBfiltavg_log2FC$gene, collapse = "|")))], color = "#7DCD85"
-    )) +
-    geom_point(aes(
-        x = -log(countHOG$pvalueFisherPerType[which(str_detect(pattern = "Mp3g07510", string = countHOG$`MpTAKv6-Marchantia_polymorpha_rudelaris`))]),
-        y = countHOG$logOddRatioPerType[which(str_detect(pattern = "Mp3g07510", string = countHOG$`MpTAKv6-Marchantia_polymorpha_rudelaris`))], color = "#E6AF2E", size = 1
-    ), shape = 18) +
-    geom_point(aes(
-        x = -log(countHOG$pvalueFisherPerType[which(str_detect(pattern = "Mp6g08690", string = countHOG$`MpTAKv6-Marchantia_polymorpha_rudelaris`))]),
-        y = countHOG$logOddRatioPerType[which(str_detect(pattern = "Mp6g08690", string = countHOG$`MpTAKv6-Marchantia_polymorpha_rudelaris`))], color = "#FF1B1C", size = 1
-    ), shape = 18) +
-    geom_point(aes(
-        x = -log(countHOG$pvalueFisherPerType[which(str_detect(pattern = "Mp4g20670", string = countHOG$`MpTAKv6-Marchantia_polymorpha_rudelaris`))]),
-        y = countHOG$logOddRatioPerType[which(str_detect(pattern = "Mp4g20670", string = countHOG$`MpTAKv6-Marchantia_polymorpha_rudelaris`))], color = "#BF4E30", size = 1
-    ), shape = 18) +
-    geom_point(aes(
-        x = -log(countHOG$pvalueFisherPerType[which(str_detect(pattern = "Mp5g01530", string = countHOG$`MpTAKv6-Marchantia_polymorpha_rudelaris`))]),
-        y = countHOG$logOddRatioPerType[which(str_detect(pattern = "Mp5g01530", string = countHOG$`MpTAKv6-Marchantia_polymorpha_rudelaris`))], size = 1, color = "#DCD6F7"
-    ), shape = 18) +
-    geom_point(aes(
-        x = -log(countHOG$pvalueFisherPerType[which(str_detect(pattern = "Mp3g02320", string = countHOG$`MpTAKv6-Marchantia_polymorpha_rudelaris`))]),
-        y = countHOG$logOddRatioPerType[which(str_detect(pattern = "Mp3g02320", string = countHOG$`MpTAKv6-Marchantia_polymorpha_rudelaris`))], size = 1, color = "#F67E7D"
-    ), shape = 18) +
+    geom_point(aes(x = -log(countHOG$pvalueFisherOBpresence), y = log(countHOG$oddsRatioFisherOBpresence)), color = "#696D7D") +
+    geom_point(aes(x = -log(countHOG$pvalueFisherOBpresence[which(str_detect(pattern = "Mp3g07510", string = countHOG$`MpTAKv6-Marchantia_polymorpha_rudelaris`))]), y = log(countHOG$oddsRatioFisherOBpresence[which(str_detect(pattern = "Mp3g07510", string = countHOG$`MpTAKv6-Marchantia_polymorpha_rudelaris`))]), color = "#E6AF2E", size = 1), shape = 18) +
+    geom_point(aes(x = -log(countHOG$pvalueFisherOBpresence[which(str_detect(pattern = "Mp6g08690", string = countHOG$`MpTAKv6-Marchantia_polymorpha_rudelaris`))]), y = log(countHOG$oddsRatioFisherOBpresence[which(str_detect(pattern = "Mp6g08690", string = countHOG$`MpTAKv6-Marchantia_polymorpha_rudelaris`))]), color = "#FF1B1C", size = 1), shape = 18) +
+    geom_point(aes(x = -log(countHOG$pvalueFisherOBpresence[which(str_detect(pattern = "Mp4g20670", string = countHOG$`MpTAKv6-Marchantia_polymorpha_rudelaris`))]), y = log(countHOG$oddsRatioFisherOBpresence[which(str_detect(pattern = "Mp4g20670", string = countHOG$`MpTAKv6-Marchantia_polymorpha_rudelaris`))]), color = "#BF4E30", size = 1), shape = 18) +
+    geom_point(aes(x = -log(countHOG$pvalueFisherOBpresence[which(str_detect(pattern = "Mp5g01530", string = countHOG$`MpTAKv6-Marchantia_polymorpha_rudelaris`))]), y = log(countHOG$oddsRatioFisherOBpresence[which(str_detect(pattern = "Mp5g01530", string = countHOG$`MpTAKv6-Marchantia_polymorpha_rudelaris`))]), size = 1, color = "#DCD6F7"), shape = 18) +
+    geom_point(aes(x = -log(countHOG$pvalueFisherOBpresence[which(str_detect(pattern = "Mp3g02320", string = countHOG$`MpTAKv6-Marchantia_polymorpha_rudelaris`))]), y = log(countHOG$oddsRatioFisherOBpresence[which(str_detect(pattern = "Mp3g02320", string = countHOG$`MpTAKv6-Marchantia_polymorpha_rudelaris`))]), size = 1, color = "#F67E7D"), shape = 18) +
     scale_color_manual("HOG of gene...",
         breaks = c("#7DCD85", "#E6AF2E", "#FF1B1C", "#BF4E30", "#DCD6F7", "#F67E7D"),
         values = c("#7DCD85", "#E6AF2E", "#FF1B1C", "#BF4E30", "#DCD6F7", "#F67E7D"),
