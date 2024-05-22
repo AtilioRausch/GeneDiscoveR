@@ -67,3 +67,22 @@ plot_GeneDiscoveR_volcano <- function(GeneDiscoveRobject = NULL, name = NULL) {
 #     values = c("#7DCD85", "#E6AF2E", "#FF1B1C", "#BF4E30", "#DCD6F7", "#F67E7D"),
 #     labels = c("In single cell", "MpMYB2", "MpERF13", "MpSYP12B", "MpNAC6", "MpC1HDZ")
 #   )
+get_overall_statistics <- function(GeneDiscoveRobject = NULL) {
+    if (is.null(GeneDiscoveRobject)) {
+        stop("Error: 'GeneDiscoveRobject' cannot be NULL.")
+    }
+    if (is.null(GeneDiscoveRobject$runsData$overallMetrics)) {
+        stop("Error: 'GeneDiscoveRobject$runsData$overallMetrics' cannot be NULL.")
+    }
+    return(GeneDiscoveRobject$runsData$overallMetrics)
+}
+
+get_medians_statistics <- function(GeneDiscoveRobject = NULL) {
+    if (is.null(GeneDiscoveRobject)) {
+        stop("Error: 'GeneDiscoveRobject' cannot be NULL.")
+    }
+    if (is.null(GeneDiscoveRobject$runsData$overallMetrics)) {
+        stop("Error: 'GeneDiscoveRobject$runsData$medians' cannot be NULL.")
+    }
+    return(GeneDiscoveRobject$runsData$medians)
+}

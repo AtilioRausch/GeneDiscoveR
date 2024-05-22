@@ -20,7 +20,7 @@ library(doParallel)
 # Directory where the data is located
 overallsDir <- "/home/atilio/Escritorio/LiverwortGitHub/GeneDiscoveR/inst/extdata/Comparatives-1dot3-6/"
 N0sDir <- "/home/atilio/Escritorio/LiverwortGitHub/GeneDiscoveR/inst/extdata/N0-1dot3-6/"
-genomesTSV <- "inst/extdata/genomes.tsv"
+genomesTSV <- "inst/extdata/proteomes.tsv"
 
 GeneDiscoveRobject <- GeneDiscoveR(
   overallsDir = overallsDir,
