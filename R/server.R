@@ -4,7 +4,7 @@ server <- function(input, output) {
 
     output$myImage <- renderUI({
         image <- reactive({
-            outfile <- "/home/atilio/Escritorio/LiverwortGitHub/PhenoR/R/logo.png"
+            outfile <- "/home/atilio/Escritorio/LiverwortGitHub/GeneDiscoveR/R/logo.png"
             list(
                 src = outfile,
                 contentType = "image/png",
@@ -27,22 +27,22 @@ server <- function(input, output) {
             data <- get(input$dataframeName)
             name <- input$name
             # Obtiene el dataframe por su nombre
-            if (class(data) == "PhenoR" && is.character(name) && name %in% get_names_identification(PhenoRobject)) {
+            if (class(data) == "GeneDiscoveR" && is.character(name) && name %in% get_names_identification(GeneDiscoveRobject)) {
                 showNotification("Success: The GeneDiscoveR object and the identification name were entered correctly. Please wait a moment!.", type = "message", duration = NULL)
 
-                PhenoRidentification <- get_identification(PhenoRobject = PhenoRobject, name = name)
+                GeneDiscoveRidentification <- get_identification(GeneDiscoveRobject = GeneDiscoveRobject, name = name)
                 data <- data$RunActive$N0Active
                 data <- data %>%
                     mutate(
                         logoddRatioFisher = case_when(
-                            !!sym(PhenoRidentification$columns[5]) == 0 ~ -5,
-                            !!sym(PhenoRidentification$columns[5]) == Inf ~ 5,
-                            is.finite(!!sym(PhenoRidentification$columns[5])) ~ log(!!sym(PhenoRidentification$columns[5]))
+                            !!sym(GeneDiscoveRidentification$columns[5]) == 0 ~ -5,
+                            !!sym(GeneDiscoveRidentification$columns[5]) == Inf ~ 5,
+                            is.finite(!!sym(GeneDiscoveRidentification$columns[5])) ~ log(!!sym(GeneDiscoveRidentification$columns[5]))
                         )
                     )
                 output$plot <- renderPlotly({
                     g1 <- ggplot() +
-                        geom_point(aes(x = -log(data[[PhenoRidentification$columns[4]]]), y = data$logoddRatioFisher), color = "#696D7D") +
+                        geom_point(aes(x = -log(data[[GeneDiscoveRidentification$columns[4]]]), y = data$logoddRatioFisher), color = "#696D7D") +
                         coord_flip() +
                         geom_hline(yintercept = 0, linetype = "dotted", col = "red") +
                         geom_vline(xintercept = 2.9957, linetype = "dotted", col = "red") +
@@ -103,9 +103,9 @@ server <- function(input, output) {
                     )
                 })
             } else {
-                if (class(data) == "PhenoR") {
+                if (class(data) == "GeneDiscoveR") {
                     showNotification("Error: The entered name is not the name of a GeneDiscoveR object!", type = "error")
-                } else if (is.character(name) && name %in% get_names_identification(PhenoRobject)) {
+                } else if (is.character(name) && name %in% get_names_identification(GeneDiscoveRobject)) {
                     showNotification("Error: The entered name does not correspond to an identification!", type = "error")
                 }
                 # Si el dataframe no existe, muestra una notificación de error

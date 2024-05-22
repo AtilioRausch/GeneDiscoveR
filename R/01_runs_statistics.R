@@ -14,16 +14,16 @@
 #' @import tidyr
 #' @import readr
 #' @export
-calculate_overall_statistics <- function(PhenoRobject = NULL, cores = 1) {
-    if (is.null(PhenoRobject) || is.null(PhenoRobject$overallsDir)) {
-        stop("Please provide the PhenoRobject parameter and make sure PhenoRobject$overallsDir is not null.")
+calculate_overall_statistics <- function(GeneDiscoveRobject = NULL, cores = 1) {
+    if (is.null(GeneDiscoveRobject) || is.null(GeneDiscoveRobject$overallsDir)) {
+        stop("Please provide the GeneDiscoveRobject parameter and make sure GeneDiscoveRobject$overallsDir is not null.")
     }
 
-    if (PhenoRobject$Nrun <= 9) {
-        indexs <- paste0("0", seq(1, PhenoRobject$Nrun))
+    if (GeneDiscoveRobject$Nrun <= 9) {
+        indexs <- paste0("0", seq(1, GeneDiscoveRobject$Nrun))
     } else {
         indexs <- paste0("0", seq(1, 9))
-        indexs <- c(indexs, seq(10, PhenoRobject$Nrun))
+        indexs <- c(indexs, seq(10, GeneDiscoveRobject$Nrun))
     }
 
     metrics <- NULL
@@ -41,7 +41,7 @@ calculate_overall_statistics <- function(PhenoRobject = NULL, cores = 1) {
         
         # Loop through the files in parallel
         metrics <- foreach(index = indexs, .combine = rbind, .packages = c("readr")) %dopar% {
-            stats <- paste0(PhenoRobject$overallsDir, "/Statistics_Overall_", index, ".tsv")
+            stats <- paste0(GeneDiscoveRobject$overallsDir, "/Statistics_Overall_", index, ".tsv")
             stats <- suppressMessages(readr::read_tsv(stats, col_names = FALSE, skip = 10, n_max = 8))
             cbind(stats[1, 2], stats[2, 2], stats[3, 2], stats[4, 2],
                   stats[5, 2], stats[6, 2], stats[7, 2], stats[8, 2])
@@ -52,7 +52,7 @@ calculate_overall_statistics <- function(PhenoRobject = NULL, cores = 1) {
     } else {
         # Loop through the files sequentially
         for (index in indexs) {
-            stats <- paste0(PhenoRobject$overallsDir, "/Statistics_Overall_", index, ".tsv")
+            stats <- paste0(GeneDiscoveRobject$overallsDir, "/Statistics_Overall_", index, ".tsv")
             stats <- suppressMessages(readr::read_tsv(stats, col_names = FALSE, skip = 10, n_max = 8))
             metrics <- rbind(metrics, cbind(stats[1, 2], stats[2, 2], stats[3, 2], stats[4, 2],
                                              stats[5, 2], stats[6, 2], stats[7, 2], stats[8, 2]))
@@ -63,8 +63,8 @@ calculate_overall_statistics <- function(PhenoRobject = NULL, cores = 1) {
     colnames(metrics) <- c("mean", "median", "G50 (assigned genes)",
                            "G50 (all genes)", "O50 (assigned genes)",
                            "O50 (all genes)", "All species OG", "sOGs")
-    PhenoRobject$runsData$overallMetrics <- metrics
-    return(PhenoRobject)
+    GeneDiscoveRobject$runsData$overallMetrics <- metrics
+    return(GeneDiscoveRobject)
 }
 
 #' Calculate statistics for selected files
@@ -86,9 +86,9 @@ calculate_overall_statistics <- function(PhenoRobject = NULL, cores = 1) {
 #' medians <- calculate_median_statistics(nsDirectory = N0sDir)
 #' 
 #' @export
-calculate_median_statistics <- function(PhenoRobject = NULL, cores = 1) {
-    if (is.null(PhenoRobject) || is.null(PhenoRobject$N0sDir)) {
-        stop("Please provide the PhenoRobject parameter and make sure PhenoRobject$N0sDir is not null.")
+calculate_median_statistics <- function(GeneDiscoveRobject = NULL, cores = 1) {
+    if (is.null(GeneDiscoveRobject) || is.null(GeneDiscoveRobject$N0sDir)) {
+        stop("Please provide the GeneDiscoveRobject parameter and make sure GeneDiscoveRobject$N0sDir is not null.")
     }
     medians <- NULL
     allMedians <- NULL
@@ -105,7 +105,7 @@ calculate_median_statistics <- function(PhenoRobject = NULL, cores = 1) {
         registerDoParallel(cl)
         
         # Loop through the files in parallel
-        medians <- foreach(file = list.files(path = PhenoRobject$N0sDir, pattern = "^N0", full.names = TRUE), .combine = rbind, .packages = c("dplyr", "readr")) %dopar% {
+        medians <- foreach(file = list.files(path = GeneDiscoveRobject$N0sDir, pattern = "^N0", full.names = TRUE), .combine = rbind, .packages = c("dplyr", "readr")) %dopar% {
             table <- suppressMessages(readr::read_tsv(file, progress = FALSE))
             N <- table %>% 
             dplyr::group_by(OG) %>% 
@@ -124,7 +124,7 @@ calculate_median_statistics <- function(PhenoRobject = NULL, cores = 1) {
         stopCluster(cl)
     } else {
         # Loop through the files sequentially
-        for (file in list.files(path = PhenoRobject$N0sDir, pattern = "^N0", full.names = TRUE)) {
+        for (file in list.files(path = GeneDiscoveRobject$N0sDir, pattern = "^N0", full.names = TRUE)) {
             table <- suppressMessages(readr::read_tsv(file, progress = FALSE))
             N <- table %>% 
                 dplyr::group_by(OG) %>% 
@@ -142,9 +142,9 @@ calculate_median_statistics <- function(PhenoRobject = NULL, cores = 1) {
     
     medians <- medians %>% 
         as.data.frame(medians)
-    PhenoRobject$runsData$medians <- medians
+    GeneDiscoveRobject$runsData$medians <- medians
     
-    return(PhenoRobject)
+    return(GeneDiscoveRobject)
 }
 
 #' Plot Metrics of Orthogroups
@@ -160,23 +160,23 @@ calculate_median_statistics <- function(PhenoRobject = NULL, cores = 1) {
 #' 
 #' @import ggplot2
 #' @export
-plot_allSpeciesOGs_sOGs_per_inflation <- function(PhenoRobject=NULL) {
-    if (is.null(PhenoRobject) || is.null(PhenoRobject$runsData$overallMetrics) || is.null(PhenoRobject$InflationLimits)) {
-        stop("Please provide the PhenoRobject parameter and make sure PhenoRobject$runsData$overallMetrics and PhenoRobject$InflationLimits are not null.")
+plot_allSpeciesOGs_sOGs_per_inflation <- function(GeneDiscoveRobject=NULL) {
+    if (is.null(GeneDiscoveRobject) || is.null(GeneDiscoveRobject$runsData$overallMetrics) || is.null(GeneDiscoveRobject$InflationLimits)) {
+        stop("Please provide the GeneDiscoveRobject parameter and make sure GeneDiscoveRobject$runsData$overallMetrics and GeneDiscoveRobject$InflationLimits are not null.")
     }
-    plot <- ggplot(PhenoRobject$runsData$overallMetrics) +
-        geom_line(aes(x=seq(PhenoRobject$InflationLimits[1], PhenoRobject$InflationLimits[2], PhenoRobject$InflationLimits[3]), y=as.numeric(`All species OG`), color="All species OG"), alpha=0.5) +
-        geom_point(aes(x=seq(PhenoRobject$InflationLimits[1], PhenoRobject$InflationLimits[2], PhenoRobject$InflationLimits[3]), y=as.numeric(`All species OG`), color="All species OG")) +
-        geom_line(aes(x=seq(PhenoRobject$InflationLimits[1], PhenoRobject$InflationLimits[2], PhenoRobject$InflationLimits[3]), y=as.numeric(`sOGs`), color="sOGs"), alpha=0.5) +
-        geom_point(aes(x=seq(PhenoRobject$InflationLimits[1], PhenoRobject$InflationLimits[2], PhenoRobject$InflationLimits[3]), y=as.numeric(`sOGs`), color="sOGs")) +
+    plot <- ggplot(GeneDiscoveRobject$runsData$overallMetrics) +
+        geom_line(aes(x=seq(GeneDiscoveRobject$InflationLimits[1], GeneDiscoveRobject$InflationLimits[2], GeneDiscoveRobject$InflationLimits[3]), y=as.numeric(`All species OG`), color="All species OG"), alpha=0.5) +
+        geom_point(aes(x=seq(GeneDiscoveRobject$InflationLimits[1], GeneDiscoveRobject$InflationLimits[2], GeneDiscoveRobject$InflationLimits[3]), y=as.numeric(`All species OG`), color="All species OG")) +
+        geom_line(aes(x=seq(GeneDiscoveRobject$InflationLimits[1], GeneDiscoveRobject$InflationLimits[2], GeneDiscoveRobject$InflationLimits[3]), y=as.numeric(`sOGs`), color="sOGs"), alpha=0.5) +
+        geom_point(aes(x=seq(GeneDiscoveRobject$InflationLimits[1], GeneDiscoveRobject$InflationLimits[2], GeneDiscoveRobject$InflationLimits[3]), y=as.numeric(`sOGs`), color="sOGs")) +
         labs(title="Metrics of Orthogroups", x="Inflation value (I)", y="Number of orthogroups (OG)") +
-        scale_x_continuous(breaks=seq(PhenoRobject$InflationLimits[1], PhenoRobject$InflationLimits[2], PhenoRobject$InflationLimits[3]), labels=as.character(seq(PhenoRobject$InflationLimits[1], PhenoRobject$InflationLimits[2], PhenoRobject$InflationLimits[3]))) +
+        scale_x_continuous(breaks=seq(GeneDiscoveRobject$InflationLimits[1], GeneDiscoveRobject$InflationLimits[2], GeneDiscoveRobject$InflationLimits[3]), labels=as.character(seq(GeneDiscoveRobject$InflationLimits[1], GeneDiscoveRobject$InflationLimits[2], GeneDiscoveRobject$InflationLimits[3]))) +
         scale_color_jama() +
         guides(color=guide_legend(title="Metrics")) +
-        scale_y_continuous(breaks=seq(0, max(PhenoRobject$runsData$overallMetrics$`All species OG`, PhenoRobject$runsData$overallMetrics$`sOGs`) + 10, 10), labels=as.character(seq(0, max(PhenoRobject$runsData$overallMetrics$`All species OG`, PhenoRobject$runsData$overallMetrics$`sOGs`) + 10, 10)))
+        scale_y_continuous(breaks=seq(0, max(GeneDiscoveRobject$runsData$overallMetrics$`All species OG`, GeneDiscoveRobject$runsData$overallMetrics$`sOGs`) + 10, 10), labels=as.character(seq(0, max(GeneDiscoveRobject$runsData$overallMetrics$`All species OG`, GeneDiscoveRobject$runsData$overallMetrics$`sOGs`) + 10, 10)))
     
-    if (!is.null(PhenoRobject$RunActive)) {
-        plot <- plot + geom_vline(xintercept = PhenoRobject$RunActive$InflationActive, linetype = "dashed", color = "coral")
+    if (!is.null(GeneDiscoveRobject$RunActive)) {
+        plot <- plot + geom_vline(xintercept = GeneDiscoveRobject$RunActive$InflationActive, linetype = "dashed", color = "coral")
     }
     
     return(plot)
@@ -197,27 +197,27 @@ plot_allSpeciesOGs_sOGs_per_inflation <- function(PhenoRobject=NULL) {
 #' @import ggplot2
 #' @import ggsci
 #' @export
-plot_OGs_HOGs_per_inflation <- function(PhenoRobject=NULL) {
-    if (is.null(PhenoRobject) || is.null(PhenoRobject$runsData$medians) || is.null(PhenoRobject$InflationLimits)) {
-        stop("Please provide the PhenoRobject parameter and make sure PhenoRobject$runsData$medians and PhenoRobject$InflationLimits are not null.")
+plot_OGs_HOGs_per_inflation <- function(GeneDiscoveRobject=NULL) {
+    if (is.null(GeneDiscoveRobject) || is.null(GeneDiscoveRobject$runsData$medians) || is.null(GeneDiscoveRobject$InflationLimits)) {
+        stop("Please provide the GeneDiscoveRobject parameter and make sure GeneDiscoveRobject$runsData$medians and GeneDiscoveRobject$InflationLimits are not null.")
     }
-    plot <- ggplot(PhenoRobject$runsData$medians) +
-        geom_line(aes(x = seq(PhenoRobject$InflationLimits[1], PhenoRobject$InflationLimits[2], PhenoRobject$InflationLimits[3]), y = as.numeric(nOGstotal), color = "Number of OGs")) +
-        geom_point(aes(x = seq(PhenoRobject$InflationLimits[1], PhenoRobject$InflationLimits[2], PhenoRobject$InflationLimits[3]), y = as.numeric(nOGstotal), color = "Number of OGs")) +
-        geom_line(aes(x = seq(PhenoRobject$InflationLimits[1], PhenoRobject$InflationLimits[2], PhenoRobject$InflationLimits[3]), y = as.numeric(nHOGstotal), color = "Number of HOGs")) +
-        geom_point(aes(x = seq(PhenoRobject$InflationLimits[1], PhenoRobject$InflationLimits[2], PhenoRobject$InflationLimits[3]), y = as.numeric(nHOGstotal), color = "Number of HOGs")) +
+    plot <- ggplot(GeneDiscoveRobject$runsData$medians) +
+        geom_line(aes(x = seq(GeneDiscoveRobject$InflationLimits[1], GeneDiscoveRobject$InflationLimits[2], GeneDiscoveRobject$InflationLimits[3]), y = as.numeric(nOGstotal), color = "Number of OGs")) +
+        geom_point(aes(x = seq(GeneDiscoveRobject$InflationLimits[1], GeneDiscoveRobject$InflationLimits[2], GeneDiscoveRobject$InflationLimits[3]), y = as.numeric(nOGstotal), color = "Number of OGs")) +
+        geom_line(aes(x = seq(GeneDiscoveRobject$InflationLimits[1], GeneDiscoveRobject$InflationLimits[2], GeneDiscoveRobject$InflationLimits[3]), y = as.numeric(nHOGstotal), color = "Number of HOGs")) +
+        geom_point(aes(x = seq(GeneDiscoveRobject$InflationLimits[1], GeneDiscoveRobject$InflationLimits[2], GeneDiscoveRobject$InflationLimits[3]), y = as.numeric(nHOGstotal), color = "Number of HOGs")) +
         labs(title = "Metrics of Orthogroups and HOGs", x = "Inflation value (I)", y = "Count") +
-        scale_x_continuous(breaks = seq(PhenoRobject$InflationLimits[1], PhenoRobject$InflationLimits[2], PhenoRobject$InflationLimits[3]), labels = as.character(seq(PhenoRobject$InflationLimits[1], PhenoRobject$InflationLimits[2], PhenoRobject$InflationLimits[3]))) +
+        scale_x_continuous(breaks = seq(GeneDiscoveRobject$InflationLimits[1], GeneDiscoveRobject$InflationLimits[2], GeneDiscoveRobject$InflationLimits[3]), labels = as.character(seq(GeneDiscoveRobject$InflationLimits[1], GeneDiscoveRobject$InflationLimits[2], GeneDiscoveRobject$InflationLimits[3]))) +
         scale_color_jama() +
         guides(color = guide_legend(title = "Metrics")) +
         scale_y_continuous(
-           limits = c(as.numeric(min(PhenoRobject$runsData$medians$nOGstotal)), as.numeric(max(PhenoRobject$runsData$medians$nHOGstotal)) + 2000),
-            breaks = seq(as.numeric(min(PhenoRobject$runsData$medians$nOGstotal)), as.numeric(max(PhenoRobject$runsData$medians$nHOGstotal)) + 2000, 2000),
-            labels = as.character(seq(as.numeric(min(PhenoRobject$runsData$medians$nOGstotal)), as.numeric(max(PhenoRobject$runsData$medians$nHOGstotal)) + 2000, 2000))
+           limits = c(as.numeric(min(GeneDiscoveRobject$runsData$medians$nOGstotal)), as.numeric(max(GeneDiscoveRobject$runsData$medians$nHOGstotal)) + 2000),
+            breaks = seq(as.numeric(min(GeneDiscoveRobject$runsData$medians$nOGstotal)), as.numeric(max(GeneDiscoveRobject$runsData$medians$nHOGstotal)) + 2000, 2000),
+            labels = as.character(seq(as.numeric(min(GeneDiscoveRobject$runsData$medians$nOGstotal)), as.numeric(max(GeneDiscoveRobject$runsData$medians$nHOGstotal)) + 2000, 2000))
         )
     
-    if (!is.null(PhenoRobject$RunActive)) {
-        plot <- plot + geom_vline(xintercept = PhenoRobject$RunActive$InflationActive, linetype = "dashed", color = "coral")
+    if (!is.null(GeneDiscoveRobject$RunActive)) {
+        plot <- plot + geom_vline(xintercept = GeneDiscoveRobject$RunActive$InflationActive, linetype = "dashed", color = "coral")
     }
     
     return(plot)
@@ -263,6 +263,7 @@ set_ggplot2_theme <- function() {
     )
     theme_set(theme)
 }
+
 
 
 

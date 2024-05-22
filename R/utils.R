@@ -23,19 +23,19 @@ table_as_character <- function(table = NULL) {
     return(result)
 }
 
-#' Create a PhenoR object
+#' Create a GeneDiscoveR object
 #'
-#' This function creates a PhenoR object with the specified directories for overalls and N0s.
+#' This function creates a GeneDiscoveR object with the specified directories for overalls and N0s.
 #'
 #' @param overallsDir The directory path for the overalls.
 #' @param N0sDir The directory path for the N0s.
 #'
-#' @return A PhenoR object with the overalls directory, N0s directory, and the number of runs.
+#' @return A GeneDiscoveR object with the overalls directory, N0s directory, and the number of runs.
 #' @export
 #'
 #' @examples
-#' # Create a PhenoR object with the specified directories
-#' pheno_obj <- create_phenor_object(overallsDir = "/path/to/overalls", N0sDir = "/path/to/N0s")
+#' # Create a GeneDiscoveR object with the specified directories
+#' pheno_obj <- create_GeneDiscoveR_object(overallsDir = "/path/to/overalls", N0sDir = "/path/to/N0s")
 #'
 #' # Access the overalls directory
 #' pheno_obj$overallsDir
@@ -45,75 +45,75 @@ table_as_character <- function(table = NULL) {
 #'
 #' # Access the number of runs
 #' pheno_obj$Nrun
-PhenoR <- function(overallsDir = NULL, N0sDir = NULL, dataFile = NULL, annotationFile = NULL, uniqueInflation = NULL, minInflation = NULL, maxInflation = NULL, stepInflation = NULL) {
+GeneDiscoveR <- function(overallsDir = NULL, N0sDir = NULL, dataFile = NULL, annotationFile = NULL, uniqueInflation = NULL, minInflation = NULL, maxInflation = NULL, stepInflation = NULL) {
     if (is.null(N0sDir) || is.null(dataFile)) {
         stop("Error: 'overallsDir' and 'N0sDir' cannot be NULL.")
     }
 
-    PhenoRobject <- list()
-    PhenoRobject$overallsDir <- overallsDir
-    PhenoRobject$N0sDir <- N0sDir
-    PhenoRobject$genomesData <- read_tsv(file = dataFile) %>% mutate(across(everything(), as.character))
-    PhenoRobject$Nrun <- length(list.files(PhenoRobject$N0sDir, pattern = "^N0"))
-    PhenoRobject$AnnotationFile <- annotationFile
-    PhenoRobject$FilteredGenes <- NULL
-    PhenoRobject$Phenotypes <- NULL
-    PhenoRobject$RunActive <- NULL
-    PhenoRobject$Identification <- NULL
+    GeneDiscoveRobject <- list()
+    GeneDiscoveRobject$overallsDir <- overallsDir
+    GeneDiscoveRobject$N0sDir <- N0sDir
+    GeneDiscoveRobject$genomesData <- read_tsv(file = dataFile) %>% mutate(across(everything(), as.character))
+    GeneDiscoveRobject$Nrun <- length(list.files(GeneDiscoveRobject$N0sDir, pattern = "^N0"))
+    GeneDiscoveRobject$AnnotationFile <- annotationFile
+    GeneDiscoveRobject$FilteredGenes <- NULL
+    GeneDiscoveRobject$Phenotypes <- NULL
+    GeneDiscoveRobject$RunActive <- NULL
+    GeneDiscoveRobject$Identification <- NULL
     if (is.null(uniqueInflation)) {
         if (is.null(minInflation) || is.null(maxInflation) || is.null(stepInflation)) {
             stop("Error: 'minInflation', 'maxInflation', and 'stepInflation' cannot be NULL.")
         }
-        PhenoRobject$Inflation <- c(minInflation, maxInflation, stepInflation)
+        GeneDiscoveRobject$Inflation <- c(minInflation, maxInflation, stepInflation)
     } else {
-        PhenoRobject$Inflation <- uniqueInflation
-        PhenoRobject <- set_run_active(PhenoRobject, InflationValue = uniqueInflation)
+        GeneDiscoveRobject$Inflation <- uniqueInflation
+        GeneDiscoveRobject <- set_run_active(GeneDiscoveRobject, InflationValue = uniqueInflation)
     }
 
-    class(PhenoRobject) <- "PhenoR"
+    class(GeneDiscoveRobject) <- "GeneDiscoveR"
 
-    return(PhenoRobject)
+    return(GeneDiscoveRobject)
 }
 
-PhenoRIdentification <- function(name = NULL, statistic = NULL, formula = NULL, Phenotypes = NULL, columns = NULL) {
+GeneDiscoveRIdentification <- function(name = NULL, statistic = NULL, formula = NULL, Phenotypes = NULL, columns = NULL) {
     if (is.null(name) || is.null(statistic) || is.null(formula) || is.null(Phenotypes) || is.null(columns)) {
         stop("Error: All parameters must be provided.")
     }
-    PhenoRIdentificationObject <- list()
-    PhenoRIdentificationObject$name <- name
-    PhenoRIdentificationObject$statistic <- statistic
-    PhenoRIdentificationObject$formula <- formula
-    PhenoRIdentificationObject$Phenotypes <- Phenotypes
-    PhenoRIdentificationObject$columns <- columns
-    class(PhenoRIdentificationObject) <- "PhenoRIdentification"
-    return(PhenoRIdentificationObject)
+    GeneDiscoveRIdentificationObject <- list()
+    GeneDiscoveRIdentificationObject$name <- name
+    GeneDiscoveRIdentificationObject$statistic <- statistic
+    GeneDiscoveRIdentificationObject$formula <- formula
+    GeneDiscoveRIdentificationObject$Phenotypes <- Phenotypes
+    GeneDiscoveRIdentificationObject$columns <- columns
+    class(GeneDiscoveRIdentificationObject) <- "GeneDiscoveRIdentification"
+    return(GeneDiscoveRIdentificationObject)
 }
 
-PhenoRFilteredGenes <- function(table = NULL, name = NULL, pvalue = NULL, oddsRatio = NULL, sign = NULL) {
+GeneDiscoveRFilteredGenes <- function(table = NULL, name = NULL, pvalue = NULL, oddsRatio = NULL, sign = NULL) {
     if (is.null(table) || is.null(name) || is.null(pvalue) || is.null(oddsRatio) || is.null(sign)) {
         stop("Error: All parameters must be provided.")
     }
-    PhenoRFilteredGenesObject <- list()
-    PhenoRFilteredGenesObject$table <- table
-    PhenoRFilteredGenesObject$name <- name
-    PhenoRFilteredGenesObject$pvalue <- pvalue
-    PhenoRFilteredGenesObject$oddsRatio <- oddsRatio
-    PhenoRFilteredGenesObject$sign <- sign
-    class(PhenoRFilteredGenesObject) <- "PhenoRFilteredGenes"
-    return(PhenoRFilteredGenesObject)
+    GeneDiscoveRFilteredGenesObject <- list()
+    GeneDiscoveRFilteredGenesObject$table <- table
+    GeneDiscoveRFilteredGenesObject$name <- name
+    GeneDiscoveRFilteredGenesObject$pvalue <- pvalue
+    GeneDiscoveRFilteredGenesObject$oddsRatio <- oddsRatio
+    GeneDiscoveRFilteredGenesObject$sign <- sign
+    class(GeneDiscoveRFilteredGenesObject) <- "GeneDiscoveRFilteredGenes"
+    return(GeneDiscoveRFilteredGenesObject)
 }
 
-select_filtered_gene_index <- function(PhenoRobject = NULL, name = NULL, pvalue = NULL, oddsRatio = NULL, sign = NULL) {
-    if (is.null(PhenoRobject) || is.null(name) || is.null(pvalue) || is.null(oddsRatio) || is.null(sign)) {
-        stop("Error: 'PhenoRobject', 'name', 'pvalue', 'oddsRatio', and 'sign' cannot be NULL.")
+select_filtered_gene_index <- function(GeneDiscoveRobject = NULL, name = NULL, pvalue = NULL, oddsRatio = NULL, sign = NULL) {
+    if (is.null(GeneDiscoveRobject) || is.null(name) || is.null(pvalue) || is.null(oddsRatio) || is.null(sign)) {
+        stop("Error: 'GeneDiscoveRobject', 'name', 'pvalue', 'oddsRatio', and 'sign' cannot be NULL.")
     }
 
-    if (is.null(PhenoRobject$FilteredGenes)) {
+    if (is.null(GeneDiscoveRobject$FilteredGenes)) {
         return(NULL)
     }
 
-    for (i in seq_along(PhenoRobject$FilteredGenes)) {
-        filteredGene <- PhenoRobject$FilteredGenes[[i]]
+    for (i in seq_along(GeneDiscoveRobject$FilteredGenes)) {
+        filteredGene <- GeneDiscoveRobject$FilteredGenes[[i]]
         if (filteredGene$name == name && filteredGene$pvalue == pvalue && filteredGene$oddsRatio == oddsRatio && filteredGene$sign == sign) {
             return(i)
         }
@@ -122,46 +122,46 @@ select_filtered_gene_index <- function(PhenoRobject = NULL, name = NULL, pvalue 
     return(NULL)
 }
 
-set_run_active <- function(PhenoRobject = NULL, InflationValue = 1.8) {
-    if (is.null(PhenoRobject)) {
-        stop("Error: 'PhenoRobject' cannot be NULL.")
+set_run_active <- function(GeneDiscoveRobject = NULL, InflationValue = 1.8) {
+    if (is.null(GeneDiscoveRobject)) {
+        stop("Error: 'GeneDiscoveRobject' cannot be NULL.")
     }
 
-    if (length((PhenoRobject$Inflation)) > 1) {
-        if (InflationValue < PhenoRobject$InflationLimits[1] || InflationValue > PhenoRobject$InflationLimits[2]) {
+    if (length((GeneDiscoveRobject$Inflation)) > 1) {
+        if (InflationValue < GeneDiscoveRobject$InflationLimits[1] || InflationValue > GeneDiscoveRobject$InflationLimits[2]) {
             stop("Error: 'InflationValue' is out of range.")
         }
     }
 
-    PhenoRobject$RunActive$InflationActive <- InflationValue
+    GeneDiscoveRobject$RunActive$InflationActive <- InflationValue
 
-    if (length(PhenoRobject$Inflation) > 1) {
-        PhenoRobject$RunActive$IndexActive <- index_N0_inflation(PhenoRobject, InflationValue)
+    if (length(GeneDiscoveRobject$Inflation) > 1) {
+        GeneDiscoveRobject$RunActive$IndexActive <- index_N0_inflation(GeneDiscoveRobject, InflationValue)
     } else {
-        PhenoRobject$RunActive$IndexActive <- 1
+        GeneDiscoveRobject$RunActive$IndexActive <- 1
     }
-    PhenoRobject$RunActive$N0fileActive <- list.files(path = PhenoRobject$N0sDir, pattern = "^N0", full.names = TRUE)[PhenoRobject$RunActive$IndexActive]
-    PhenoRobject$RunActive$N0Active <- read_tsv(file = PhenoRobject$RunActive$N0fileActive)
+    GeneDiscoveRobject$RunActive$N0fileActive <- list.files(path = GeneDiscoveRobject$N0sDir, pattern = "^N0", full.names = TRUE)[GeneDiscoveRobject$RunActive$IndexActive]
+    GeneDiscoveRobject$RunActive$N0Active <- read_tsv(file = GeneDiscoveRobject$RunActive$N0fileActive)
 
-    return(PhenoRobject)
+    return(GeneDiscoveRobject)
 }
 
-clean_phenotypes <- function(PhenoRobject = NULL) {
-    if (is.null(PhenoRobject)) {
-        stop("Error: 'PhenoRobject' cannot be NULL.")
+clean_phenotypes <- function(GeneDiscoveRobject = NULL) {
+    if (is.null(GeneDiscoveRobject)) {
+        stop("Error: 'GeneDiscoveRobject' cannot be NULL.")
     }
 
-    PhenoRobject$Phenotypes <- NULL
+    GeneDiscoveRobject$Phenotypes <- NULL
 
-    return(PhenoRobject)
+    return(GeneDiscoveRobject)
 }
 
-index_N0_inflation <- function(PhenoRobject = NULL, InflationValue = 1.8) {
-    if (is.null(PhenoRobject)) {
-        stop("Error: 'PhenoRobject' cannot be NULL.")
+index_N0_inflation <- function(GeneDiscoveRobject = NULL, InflationValue = 1.8) {
+    if (is.null(GeneDiscoveRobject)) {
+        stop("Error: 'GeneDiscoveRobject' cannot be NULL.")
     }
 
-    index <- which(seq(PhenoRobject$InflationLimits[1], PhenoRobject$InflationLimits[2], PhenoRobject$InflationLimits[3]) == InflationValue)
+    index <- which(seq(GeneDiscoveRobject$InflationLimits[1], GeneDiscoveRobject$InflationLimits[2], GeneDiscoveRobject$InflationLimits[3]) == InflationValue)
 
     return(index)
 }
@@ -193,16 +193,16 @@ process_rows2 <- function(df, predictor, response, nameColumn1, nameColumn2, nam
     return(df)
 }
 
-get_names_identification <- function(PhenoRobject = NULL) {
-    if (is.null(PhenoRobject)) {
-        stop("Error: 'PhenoRobject' cannot be NULL.")
+get_names_identification <- function(GeneDiscoveRobject = NULL) {
+    if (is.null(GeneDiscoveRobject)) {
+        stop("Error: 'GeneDiscoveRobject' cannot be NULL.")
     }
-    if (is.null(PhenoRobject$Identification)) {
-        stop("Error: 'PhenoRobject$Identification' cannot be NULL.")
+    if (is.null(GeneDiscoveRobject$Identification)) {
+        stop("Error: 'GeneDiscoveRobject$Identification' cannot be NULL.")
     }
     result <- c()
-    for (i in seq_along(PhenoRobject$Identification)) {
-        result <- c(result, PhenoRobject$Identification[[i]]$name)
+    for (i in seq_along(GeneDiscoveRobject$Identification)) {
+        result <- c(result, GeneDiscoveRobject$Identification[[i]]$name)
     }
     return(result)
 }

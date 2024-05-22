@@ -1,32 +1,32 @@
-set_annotation_file <- function(PhenoRobject = NULL, annotationFile = NULL) {
-    if (is.null(PhenoRobject) || is.null(annotationFile)) {
-        stop("Error: 'PhenoRobject' and 'annotationFile' cannot be NULL.")
+set_annotation_file <- function(GeneDiscoveRobject = NULL, annotationFile = NULL) {
+    if (is.null(GeneDiscoveRobject) || is.null(annotationFile)) {
+        stop("Error: 'GeneDiscoveRobject' and 'annotationFile' cannot be NULL.")
     }
-    PhenoRobject$AnnotationFile <- annotationFile
-    return(PhenoRobject)
+    GeneDiscoveRobject$AnnotationFile <- annotationFile
+    return(GeneDiscoveRobject)
 }
-map_annotation <- function(PhenoRobject = NULL, indexFilteredGenes = NULL, oneColumn = TRUE, specieWithAnnotation = "MpTAKv6-Marchantia_polymorpha_rudelaris") {
-    annotation <- map_gene_annotation(PhenoRobject = PhenoRobject, indexFilteredGenes = indexFilteredGenes, specieWithAnnotation = specieWithAnnotation)
+map_annotation <- function(GeneDiscoveRobject = NULL, indexFilteredGenes = NULL, oneColumn = TRUE, specieWithAnnotation = "MpTAKv6-Marchantia_polymorpha_rudelaris") {
+    annotation <- map_gene_annotation(GeneDiscoveRobject = GeneDiscoveRobject, indexFilteredGenes = indexFilteredGenes, specieWithAnnotation = specieWithAnnotation)
     if (oneColumn) {
         annotation <- split_annotation_per_gene(tableOG_HOG_Anno = annotation)
     }
     annotation <- filter_oneGene_per_OG_HOG(tableOG_HOG = annotation)
-    PhenoRobject$FilteredGenes[[indexFilteredGenes]]$table <- merge(PhenoRobject$FilteredGenes[[indexFilteredGenes]]$table, annotation, by.x = c("OG", "Gene Tree Parent Clade"), by.y = c("OG", "HOG"), all = T)
-    return(PhenoRobject)
+    GeneDiscoveRobject$FilteredGenes[[indexFilteredGenes]]$table <- merge(GeneDiscoveRobject$FilteredGenes[[indexFilteredGenes]]$table, annotation, by.x = c("OG", "Gene Tree Parent Clade"), by.y = c("OG", "HOG"), all = T)
+    return(GeneDiscoveRobject)
 }
-map_gene_annotation <- function(PhenoRobject = NULL, indexFilteredGenes = NULL, specieWithAnnotation = "MpTAKv6-Marchantia_polymorpha_rudelaris") {
-    if (is.null(PhenoRobject$AnnotationFile) || !file.exists(PhenoRobject$AnnotationFile)) {
-        stop("Error: 'PhenoRobject$AnnotationFile' is NULL or does not exist.")
+map_gene_annotation <- function(GeneDiscoveRobject = NULL, indexFilteredGenes = NULL, specieWithAnnotation = "MpTAKv6-Marchantia_polymorpha_rudelaris") {
+    if (is.null(GeneDiscoveRobject$AnnotationFile) || !file.exists(GeneDiscoveRobject$AnnotationFile)) {
+        stop("Error: 'GeneDiscoveRobject$AnnotationFile' is NULL or does not exist.")
     }
-    tableAnnotation <- read_tsv(PhenoRobject$AnnotationFile, col_names = FALSE)
+    tableAnnotation <- read_tsv(GeneDiscoveRobject$AnnotationFile, col_names = FALSE)
     # Check if the tableAnnotation is read correctly
     Ids <- ""
     result <- tibble()
-    for (i in 1:dim(PhenoRobject$FilteredGenes[[indexFilteredGenes]]$table)[1]) {
+    for (i in 1:dim(GeneDiscoveRobject$FilteredGenes[[indexFilteredGenes]]$table)[1]) {
         Ids <-
-            str_split(PhenoRobject$FilteredGenes[[indexFilteredGenes]]$table[[specieWithAnnotation]][i], pattern = ", ")[[1]]
-        OG <- PhenoRobject$FilteredGenes[[indexFilteredGenes]]$table$OG[i]
-        GeneTree <- PhenoRobject$FilteredGenes[[indexFilteredGenes]]$table$`Gene Tree Parent Clade`[i]
+            str_split(GeneDiscoveRobject$FilteredGenes[[indexFilteredGenes]]$table[[specieWithAnnotation]][i], pattern = ", ")[[1]]
+        OG <- GeneDiscoveRobject$FilteredGenes[[indexFilteredGenes]]$table$OG[i]
+        GeneTree <- GeneDiscoveRobject$FilteredGenes[[indexFilteredGenes]]$table$`Gene Tree Parent Clade`[i]
         count <- 0
         resultaux <- tibble()
         for (id in Ids) {

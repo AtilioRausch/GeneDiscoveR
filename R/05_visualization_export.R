@@ -2,30 +2,30 @@ run_web_app <- function() {
     launch_web_app()
 }
 
-get_identification <- function(PhenoRobject = NULL, name = NULL) {
-    if (is.null(PhenoRobject) || is.null(name)) {
-        stop("Error: 'PhenoRobject' and 'name' cannot be NULL.")
+get_identification <- function(GeneDiscoveRobject = NULL, name = NULL) {
+    if (is.null(GeneDiscoveRobject) || is.null(name)) {
+        stop("Error: 'GeneDiscoveRobject' and 'name' cannot be NULL.")
     }
-    if (is.null(PhenoRobject$Identification)) {
-        stop("Error: 'PhenoRobject$Identification' cannot be NULL.")
+    if (is.null(GeneDiscoveRobject$Identification)) {
+        stop("Error: 'GeneDiscoveRobject$Identification' cannot be NULL.")
     }
-    for (i in seq_along(PhenoRobject$Identification)) {
-        if (PhenoRobject$Identification[[i]]$name == name) {
-            return(PhenoRobject$Identification[[i]])
+    for (i in seq_along(GeneDiscoveRobject$Identification)) {
+        if (GeneDiscoveRobject$Identification[[i]]$name == name) {
+            return(GeneDiscoveRobject$Identification[[i]])
         }
     }
 }
 
-get_filtered_genes_table <- function(PhenoRobject = NULL, name = NULL, pvalue = NULL, oddsRatio = NULL, sign = NULL) {
-    if (is.null(PhenoRobject) || is.null(name) || is.null(pvalue) || is.null(oddsRatio) || is.null(sign)) {
-        stop("Error: 'PhenoRobject', 'name', 'pvalue', 'oddsRatio', and 'sign' cannot be NULL.")
+get_filtered_genes_table <- function(GeneDiscoveRobject = NULL, name = NULL, pvalue = NULL, oddsRatio = NULL, sign = NULL) {
+    if (is.null(GeneDiscoveRobject) || is.null(name) || is.null(pvalue) || is.null(oddsRatio) || is.null(sign)) {
+        stop("Error: 'GeneDiscoveRobject', 'name', 'pvalue', 'oddsRatio', and 'sign' cannot be NULL.")
     }
-    if (is.null(PhenoRobject$FilteredGenes)) {
-        stop("Error: 'PhenoRobject$FilteredGenes' cannot be NULL.")
+    if (is.null(GeneDiscoveRobject$FilteredGenes)) {
+        stop("Error: 'GeneDiscoveRobject$FilteredGenes' cannot be NULL.")
     }
     result <- c()
-    for (i in seq_along(PhenoRobject$FilteredGenes)) {
-        filteredGene <- PhenoRobject$FilteredGenes[[i]]
+    for (i in seq_along(GeneDiscoveRobject$FilteredGenes)) {
+        filteredGene <- GeneDiscoveRobject$FilteredGenes[[i]]
         if (filteredGene$name == name && filteredGene$pvalue == pvalue && filteredGene$oddsRatio == oddsRatio && filteredGene$sign == sign) {
             result <- filteredGene$table[, !startsWith(names(filteredGene$table), "fisherResult")]
         }
@@ -33,21 +33,21 @@ get_filtered_genes_table <- function(PhenoRobject = NULL, name = NULL, pvalue = 
     return(result)
 }
 
-plot_phenor_volcano <- function(PhenoRobject = NULL, name = NULL) {
-    PhenoRidentification <- get_identification(PhenoRobject = PhenoRobject, name = name)
-    if (!inherits(PhenoRidentification, "PhenoRIdentification")) {
-        stop("Error: 'PhenoRidentification' must be of class 'PhenoRIdentification'.")
+plot_GeneDiscoveR_volcano <- function(GeneDiscoveRobject = NULL, name = NULL) {
+    GeneDiscoveRidentification <- get_identification(GeneDiscoveRobject = GeneDiscoveRobject, name = name)
+    if (!inherits(GeneDiscoveRidentification, "GeneDiscoveRIdentification")) {
+        stop("Error: 'GeneDiscoveRidentification' must be of class 'GeneDiscoveRIdentification'.")
     }
-    table <- PhenoRobject$RunActive$N0Active %>%
+    table <- GeneDiscoveRobject$RunActive$N0Active %>%
         mutate(
             logoddRatioFisher = case_when(
-                !!sym(PhenoRidentification$columns[5]) == 0 ~ -5,
-                !!sym(PhenoRidentification$columns[5]) == Inf ~ 5,
-                is.finite(!!sym(PhenoRidentification$columns[5])) ~ log(!!sym(PhenoRidentification$columns[5]))
+                !!sym(GeneDiscoveRidentification$columns[5]) == 0 ~ -5,
+                !!sym(GeneDiscoveRidentification$columns[5]) == Inf ~ 5,
+                is.finite(!!sym(GeneDiscoveRidentification$columns[5])) ~ log(!!sym(GeneDiscoveRidentification$columns[5]))
             )
         )
     g1 <- ggplot() +
-        geom_point(aes(x = -log(table[[PhenoRidentification$columns[4]]]), y = table$logoddRatioFisher), color = "#696D7D") +
+        geom_point(aes(x = -log(table[[GeneDiscoveRidentification$columns[4]]]), y = table$logoddRatioFisher), color = "#696D7D") +
         coord_flip() +
         geom_hline(yintercept = 0, linetype = "dotted", col = "red") +
         geom_vline(xintercept = 2.9957, linetype = "dotted", col = "red") +
