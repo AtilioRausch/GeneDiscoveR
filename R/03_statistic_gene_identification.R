@@ -1,4 +1,4 @@
-gene_identification_by_phenotype <- function(formula, PhenoRobject = NULL, statistic = "Fisher", name = "PerType") {
+gene_identification_by_phenotype <- function(formula, PhenoRobject = NULL, statistic = "Fisher", name = "PerType", cores = 1) {
     if (!is.null(PhenoRobject$Identification)) {
         if (any(PhenoRobject$Identification$name == name & PhenoRobject$Identification$statistic == statistic)) {
             stop("Error: An execution with the same name and statistic already exists in PhenoRobject$Identification.")
@@ -50,26 +50,32 @@ gene_identification_by_phenotype <- function(formula, PhenoRobject = NULL, stati
         nameColumn1 <- paste0("N_", str_replace_all(pattern = " ", replacement = "_", formula[[3]]))
         nameColumn2 <- paste0("N_", str_replace_all(pattern = " ", replacement = "_", formula[[2]]))
         # Realiza la prueba exacta de Fisher
-        PhenoRobject$RunActive$N0Active <- PhenoRobject$RunActive$N0Active %>%
-            rowwise() %>%
-            mutate(
-                nameColumn1 = sum(!is.na(c_across(all_of(predictor)))),
-                nameColumn2 = sum(!is.na(c_across(all_of(response))))
-            )
+        # PhenoRobject$RunActive$N0Active <- PhenoRobject$RunActive$N0Active %>%
+        #     rowwise() %>%
+        #     mutate(
+        #         nameColumn1 = sum(!is.na(c_across(all_of(predictor)))),
+        #         nameColumn2 = sum(!is.na(c_across(all_of(response))))
+        #     )
         nameColumn3 <- paste0("fisherResult", name)
+        if (cores == 1) {
+            PhenoRobject$RunActive$N0Active <- process_rows(PhenoRobject$RunActive$N0Active, predictor, response, nameColumn1, nameColumn2)
+            PhenoRobject$RunActive$N0Active <- process_rows2(PhenoRobject$RunActive$N0Active, predictor, response, nameColumn1, nameColumn2, nameColumn3)
+        } else {
+            is_windows <- .Platform$OS.type == "windows"
+            numCores <- min(cores, parallel::detectCores())
+
+            split_data <- split(PhenoRobject$RunActive$N0Active, cut(seq(nrow(PhenoRobject$RunActive$N0Active)), numCores, labels = FALSE))
+            # Procesar cada parte en paralelo
+            tmpData <- mclapply(split_data, process_rows, predictor, response, nameColumn1, nameColumn2, mc.cores = numCores)
+            PhenoRobject$RunActive$N0Active <- bind_rows(tmpData)
+            rm(tmpData, split_data)
+
+            split_data <- split(PhenoRobject$RunActive$N0Active, cut(seq(nrow(PhenoRobject$RunActive$N0Active)), numCores, labels = FALSE))
+            tmpData <- mclapply(split_data, process_rows2, predictor, response, nameColumn1, nameColumn2, nameColumn3, mc.cores = numCores)
+            PhenoRobject$RunActive$N0Active <- bind_rows(tmpData)
+            rm(tmpData, split_data)
+        }
         PhenoRobject$RunActive$N0Active <- PhenoRobject$RunActive$N0Active %>%
-            rowwise() %>%
-            mutate(
-                !!nameColumn3 := list(fisher.test(matrix(
-                    c(
-                        (nameColumn1),
-                        (nameColumn2),
-                        length(predictor) - (nameColumn1),
-                        length(response) - (nameColumn2)
-                    ),
-                    nrow = 2, byrow = TRUE
-                )))
-            ) %>%
             rowwise() %>%
             mutate(
                 !!paste0("pvalueFisher", name) := (!!sym(nameColumn3))[["p.value"]],

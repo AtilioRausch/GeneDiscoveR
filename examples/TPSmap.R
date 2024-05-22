@@ -15,6 +15,7 @@ devtools::install_github("AtilioRausch/PhenoR")
 library(PhenoR)
 library(tidyverse)
 library(ggsci)
+library(doParallel)
 
 # Directory where the data is located
 overallsDir <- "/home/atilio/Escritorio/LiverwortGitHub/PhenoR/inst/extdata/Comparatives-1dot3-6/"
@@ -22,20 +23,30 @@ N0sDir <- "/home/atilio/Escritorio/LiverwortGitHub/PhenoR/inst/extdata/N0-1dot3-
 genomesTSV <- "inst/extdata/genomes.tsv"
 
 PhenoRobject <- PhenoR(
-    overallsDir = overallsDir,
-    N0sDir = N0sDir,
-    dataFile = genomesTSV,
-    minInflation = 1.3,
-    maxInflation = 6,
-    stepInflation = 0.1
+  overallsDir = overallsDir,
+  N0sDir = N0sDir,
+  dataFile = genomesTSV,
+  minInflation = 1.3,
+  maxInflation = 6,
+  stepInflation = 0.1
 )
 
 # system.file("extdata", "Comparatives-1.3-6", package = "PhenoR")
 # system.file("extdata", "N0-1.3-6", package = "PhenoR")
 
 # Calculate statistics for each execution of Orthofinder for selecting the best inflation value
-PhenoRobject <- calculate_overall_statistics(PhenoRobject)
-PhenoRobject <- calculate_median_statistics(PhenoRobject)
+
+PhenoRobject <- calculate_overall_statistics(PhenoRobject, cores = 8)
+#    user  system elapsed                        1 core 4Ghz
+#   1.409   0.028   1.423
+#    user  system elapsed                        8 cores 4Ghz
+#   0.089   0.018   1.579
+
+PhenoRobject <- calculate_median_statistics(PhenoRobject, cores = 8)
+#    user  system elapsed                        1 core 4Ghz
+#  45.191   0.104  41.457
+#    user  system elapsed                        8 cores 4Ghz
+#   0.144   0.008  12.612
 
 # Plot the data -----------------------------------------------------------
 set_ggplot2_theme()
@@ -46,48 +57,93 @@ plotOGsAndHOGs <- plot_OGs_HOGs_per_inflation(PhenoRobject)
 PhenoRobject <- set_run_active(PhenoRobject, InflationValue = 1.8)
 
 PhenoRobject <- select_species_by_phenotype(
-    PhenoRobject = PhenoRobject,
-    columnPhenotype = `Oil-body-type`,
-    columnOrthofinderID = `OrthofinderID`,
-    type = "one_in_specialized_cell"
+  PhenoRobject = PhenoRobject,
+  columnPhenotype = "Oil-body-type",
+  columnID = "OrthofinderID",
+  type = "one_in_specialized_cell"
 )
 PhenoRobject <- select_species_by_phenotype(
-    PhenoRobject = PhenoRobject,
-    columnPhenotype = `Oil-body-type`,
-    columnOrthofinderID = `OrthofinderID`,
-    type = "many_in_all_cells"
-)
-PhenoRobject <- select_species_by_phenotype(
-    PhenoRobject = PhenoRobject,
-    columnPhenotype = `Oil-body-type`,
-    columnOrthofinderID = `OrthofinderID`,
-    type = "noneOB"
+  PhenoRobject = PhenoRobject,
+  columnPhenotype = "Oil-body-type",
+  columnID = "OrthofinderID",
+  type = "many_in_all_cells"
 )
 
-# PhenoRobject <- clean_phenotypes(PhenoRobject)
+# PhenoRobject <- select_species_by_phenotype(
+#     PhenoRobject = PhenoRobject,
+#     columnPhenotype = `Oil-body-type`,
+#     columnOrthofinderID = `OrthofinderID`,
+#     type = "noneOB"
+# )
 
+# PhenoRobject <- clean_phenotypes(PhenoRobject)library(shiny)
 # To do
 # PhenoRobject <- clean_identification(PhenoRobject)
 
-PhenoRobject <- gene_identification_by_phenotype(
-    PhenoRobject = PhenoRobject,
-    formula = as.formula("noneOB ~ one_in_specialized_cell + many_in_all_cells"),
-    statistic = "Fisher",
-    name = "OBpresence"
+
+
+overallsDir <- "/home/atilio/Escritorio/LiverwortGitHub/PhenoR/inst/extdata/Comparatives-1dot3-6/"
+N0sDir <- "/home/atilio/Escritorio/LiverwortGitHub/PhenoR/inst/extdata/N0-1dot3-6/"
+proteomesTSV <- "inst/extdata/genomes.tsv"
+PhenoRobject <- PhenoR(
+  overallsDir = overallsDir,
+  N0sDir = N0sDir,
+  dataFile = genomesTSV,
+  minInflation = 1.3,
+  maxInflation = 6,
+  stepInflation = 0.1
 )
-PhenoRobject <- gene_identification_by_phenotype(
-    PhenoRobject = PhenoRobject,
-    formula = as.formula("many_in_all_cells ~ one_in_specialized_cell"),
-    statistic = "Fisher",
-    name = "PerType"
+PhenoRobject <- set_run_active(PhenoRobject, InflationValue = 1.8)
+PhenoRobject <- select_species_by_phenotype(
+  PhenoRobject = PhenoRobject,
+  columnPhenotype = "Oil-body-type",
+  columnID = "OrthofinderID",
+  type = "one_in_specialized_cell"
+)
+PhenoRobject <- select_species_by_phenotype(
+  PhenoRobject = PhenoRobject,
+  columnPhenotype = "Oil-body-type",
+  columnID = "OrthofinderID",
+  type = "many_in_all_cells"
+)
+PhenoRobject <- select_species_by_phenotype(
+  PhenoRobject = PhenoRobject,
+  columnPhenotype = "Oil-body-type",
+  columnID = "OrthofinderID",
+  type = "noneOB"
 )
 
-PhenoRobject <- select_genes_by_phenotype(PhenoRobject,
-    pvalue = 0.05,
-    oddsRatio = 1,
-    sign = ">=",
-    name = "OBpresence"
+t <- proc.time() # Inicia el cronómetro
+PhenoRobject <- gene_identification_by_phenotype(
+  PhenoRobject = PhenoRobject,
+  formula = as.formula("noneOB ~ one_in_specialized_cell + many_in_all_cells"),
+  statistic = "Fisher",
+  name = "OBpresence",
+  cores = 8
 )
+proc.time() - t
+#    user  system elapsed                        1 core 4Ghz
+#  61.421   0.003  61.432
+#    user  system elapsed                        8 cores 4Ghz
+# 107.199   4.617  16.453
+
+# PhenoRobject <- gene_identification_by_phenotype(
+#     PhenoRobject = PhenoRobject,
+#     formula = as.formula("many_in_all_cells ~ one_in_specialized_cell"),
+#     statistic = "Fisher",
+#     name = "PerType"
+# )
+
+PhenoRobject <- select_genes_by_phenotype(PhenoRobject,
+  pvalue = 0.05,
+  oddsRatio = 1,
+  sign = ">=",
+  name = "OBpresence"
+)
+
+dim(PhenoRobject$FilteredGenes[[1]]$table)
+
+View(PhenoRobject$RunActive$N0Active)
 # PhenoRobject <- select_genes_by_phenotype(PhenoRobject,
 #     pvalue = 0.05,
 #     oddsRatio = 1,
@@ -102,30 +158,23 @@ PhenoRobject <- set_annotation_file(PhenoRobject, annotationFile = "inst/extdata
 
 indexFilteredGenes <- select_filtered_gene_index(PhenoRobject, name = "OBpresence", pvalue = 0.05, oddsRatio = 1, sign = ">=")
 PhenoRobject <- map_annotation(
-    PhenoRobject = PhenoRobject,
-    indexFilteredGenes = indexFilteredGenes,
-    specieWithAnnotation = "MpTAKv6-Marchantia_polymorpha_rudelaris"
+  PhenoRobject = PhenoRobject,
+  indexFilteredGenes = indexFilteredGenes,
+  specieWithAnnotation = "MpTAKv6-Marchantia_polymorpha_rudelaris"
 )
+
+identification <- get_identification(PhenoRobject, name = "OBpresence")
+
+filteredTable <- get_filtered_genes_table(PhenoRobject, name = "OBpresence", pvalue = 0.05, oddsRatio = 1, sign = ">=")
+plot_phenor_volcano(PhenoRobject, name = "OBpresence")
+run_web_app()
+
+
+
 log(countHOG$oddsRatioFisherOBpresence)
 View(PhenoRobject$FilteredGenes[[indexFilteredGenes]]$table)
 countHOG <- PhenoRobject$RunActive$N0Active
-g1 <- ggplot() +
-    geom_point(aes(x = -log(countHOG$pvalueFisherOBpresence), y = log(countHOG$oddsRatioFisherOBpresence)), color = "#696D7D") +
-    geom_point(aes(x = -log(countHOG$pvalueFisherOBpresence[which(str_detect(pattern = "Mp3g07510", string = countHOG$`MpTAKv6-Marchantia_polymorpha_rudelaris`))]), y = log(countHOG$oddsRatioFisherOBpresence[which(str_detect(pattern = "Mp3g07510", string = countHOG$`MpTAKv6-Marchantia_polymorpha_rudelaris`))]), color = "#E6AF2E", size = 1), shape = 18) +
-    geom_point(aes(x = -log(countHOG$pvalueFisherOBpresence[which(str_detect(pattern = "Mp6g08690", string = countHOG$`MpTAKv6-Marchantia_polymorpha_rudelaris`))]), y = log(countHOG$oddsRatioFisherOBpresence[which(str_detect(pattern = "Mp6g08690", string = countHOG$`MpTAKv6-Marchantia_polymorpha_rudelaris`))]), color = "#FF1B1C", size = 1), shape = 18) +
-    geom_point(aes(x = -log(countHOG$pvalueFisherOBpresence[which(str_detect(pattern = "Mp4g20670", string = countHOG$`MpTAKv6-Marchantia_polymorpha_rudelaris`))]), y = log(countHOG$oddsRatioFisherOBpresence[which(str_detect(pattern = "Mp4g20670", string = countHOG$`MpTAKv6-Marchantia_polymorpha_rudelaris`))]), color = "#BF4E30", size = 1), shape = 18) +
-    geom_point(aes(x = -log(countHOG$pvalueFisherOBpresence[which(str_detect(pattern = "Mp5g01530", string = countHOG$`MpTAKv6-Marchantia_polymorpha_rudelaris`))]), y = log(countHOG$oddsRatioFisherOBpresence[which(str_detect(pattern = "Mp5g01530", string = countHOG$`MpTAKv6-Marchantia_polymorpha_rudelaris`))]), size = 1, color = "#DCD6F7"), shape = 18) +
-    geom_point(aes(x = -log(countHOG$pvalueFisherOBpresence[which(str_detect(pattern = "Mp3g02320", string = countHOG$`MpTAKv6-Marchantia_polymorpha_rudelaris`))]), y = log(countHOG$oddsRatioFisherOBpresence[which(str_detect(pattern = "Mp3g02320", string = countHOG$`MpTAKv6-Marchantia_polymorpha_rudelaris`))]), size = 1, color = "#F67E7D"), shape = 18) +
-    scale_color_manual("HOG of gene...",
-        breaks = c("#7DCD85", "#E6AF2E", "#FF1B1C", "#BF4E30", "#DCD6F7", "#F67E7D"),
-        values = c("#7DCD85", "#E6AF2E", "#FF1B1C", "#BF4E30", "#DCD6F7", "#F67E7D"),
-        labels = c("In single cell", "MpMYB2", "MpERF13", "MpSYP12B", "MpNAC6", "MpC1HDZ")
-    ) +
-    coord_flip() +
-    geom_hline(yintercept = 0, linetype = "dotted", col = "red") +
-    geom_vline(xintercept = 2.9957, linetype = "dotted", col = "red") +
-    annotate("text", x = 2.9957, y = 0, label = "p-value <= 0.05", vjust = 1.5, color = "black") +
-    annotate("text", x = 8, y = 1, label = "OddRatio >= 1", color = "black") +
-    ylab("") +
-    xlab("-log(p-value)") +
-    ggtitle("Fisher's Exact Test per Type of Oil-body")
+
+
+library(plotly)
+g1_plotly <- ggplotly(g1)

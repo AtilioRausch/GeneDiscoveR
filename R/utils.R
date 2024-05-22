@@ -45,21 +45,30 @@ table_as_character <- function(table = NULL) {
 #'
 #' # Access the number of runs
 #' pheno_obj$Nrun
-PhenoR <- function(overallsDir = NULL, N0sDir = NULL, dataFile = NULL, annotationFile = NULL, minInflation = 1.3, maxInflation = 6, stepInflation = 0.1) {
-    if (is.null(overallsDir) || is.null(N0sDir) || is.null(dataFile)) {
+PhenoR <- function(overallsDir = NULL, N0sDir = NULL, dataFile = NULL, annotationFile = NULL, uniqueInflation = NULL, minInflation = NULL, maxInflation = NULL, stepInflation = NULL) {
+    if (is.null(N0sDir) || is.null(dataFile)) {
         stop("Error: 'overallsDir' and 'N0sDir' cannot be NULL.")
     }
+
     PhenoRobject <- list()
     PhenoRobject$overallsDir <- overallsDir
     PhenoRobject$N0sDir <- N0sDir
-    PhenoRobject$genomesData <- read_tsv(file = dataFile)
-    PhenoRobject$Nrun <- length(list.files(PhenoRobject$N0sDir))
-    PhenoRobject$InflationLimits <- c(minInflation, maxInflation, stepInflation)
+    PhenoRobject$genomesData <- read_tsv(file = dataFile) %>% mutate(across(everything(), as.character))
+    PhenoRobject$Nrun <- length(list.files(PhenoRobject$N0sDir, pattern = "^N0"))
     PhenoRobject$AnnotationFile <- annotationFile
     PhenoRobject$FilteredGenes <- NULL
     PhenoRobject$Phenotypes <- NULL
     PhenoRobject$RunActive <- NULL
     PhenoRobject$Identification <- NULL
+    if (is.null(uniqueInflation)) {
+        if (is.null(minInflation) || is.null(maxInflation) || is.null(stepInflation)) {
+            stop("Error: 'minInflation', 'maxInflation', and 'stepInflation' cannot be NULL.")
+        }
+        PhenoRobject$Inflation <- c(minInflation, maxInflation, stepInflation)
+    } else {
+        PhenoRobject$Inflation <- uniqueInflation
+        PhenoRobject <- set_run_active(PhenoRobject, InflationValue = uniqueInflation)
+    }
 
     class(PhenoRobject) <- "PhenoR"
 
@@ -79,6 +88,7 @@ PhenoRIdentification <- function(name = NULL, statistic = NULL, formula = NULL, 
     class(PhenoRIdentificationObject) <- "PhenoRIdentification"
     return(PhenoRIdentificationObject)
 }
+
 PhenoRFilteredGenes <- function(table = NULL, name = NULL, pvalue = NULL, oddsRatio = NULL, sign = NULL) {
     if (is.null(table) || is.null(name) || is.null(pvalue) || is.null(oddsRatio) || is.null(sign)) {
         stop("Error: All parameters must be provided.")
@@ -117,12 +127,19 @@ set_run_active <- function(PhenoRobject = NULL, InflationValue = 1.8) {
         stop("Error: 'PhenoRobject' cannot be NULL.")
     }
 
-    if (InflationValue < PhenoRobject$InflationLimits[1] || InflationValue > PhenoRobject$InflationLimits[2]) {
-        stop("Error: 'InflationValue' is out of range.")
+    if (length((PhenoRobject$Inflation)) > 1) {
+        if (InflationValue < PhenoRobject$InflationLimits[1] || InflationValue > PhenoRobject$InflationLimits[2]) {
+            stop("Error: 'InflationValue' is out of range.")
+        }
     }
 
     PhenoRobject$RunActive$InflationActive <- InflationValue
-    PhenoRobject$RunActive$IndexActive <- index_N0_inflation(PhenoRobject, InflationValue)
+
+    if (length(PhenoRobject$Inflation) > 1) {
+        PhenoRobject$RunActive$IndexActive <- index_N0_inflation(PhenoRobject, InflationValue)
+    } else {
+        PhenoRobject$RunActive$IndexActive <- 1
+    }
     PhenoRobject$RunActive$N0fileActive <- list.files(path = PhenoRobject$N0sDir, pattern = "^N0", full.names = TRUE)[PhenoRobject$RunActive$IndexActive]
     PhenoRobject$RunActive$N0Active <- read_tsv(file = PhenoRobject$RunActive$N0fileActive)
 
@@ -147,4 +164,45 @@ index_N0_inflation <- function(PhenoRobject = NULL, InflationValue = 1.8) {
     index <- which(seq(PhenoRobject$InflationLimits[1], PhenoRobject$InflationLimits[2], PhenoRobject$InflationLimits[3]) == InflationValue)
 
     return(index)
+}
+
+process_rows <- function(df, predictor, response, nameColumn1, nameColumn2) {
+    df <- df %>%
+        rowwise() %>%
+        mutate(
+            nameColumn1 = sum(!is.na(c_across(all_of(predictor)))),
+            nameColumn2 = sum(!is.na(c_across(all_of(response))))
+        )
+    return(df)
+}
+
+process_rows2 <- function(df, predictor, response, nameColumn1, nameColumn2, nameColumn3) {
+    df <- df %>%
+        rowwise() %>%
+        mutate(
+            !!nameColumn3 := list(fisher.test(matrix(
+                c(
+                    nameColumn1,
+                    nameColumn2,
+                    length(predictor) - nameColumn1,
+                    length(response) - nameColumn2
+                ),
+                nrow = 2, byrow = TRUE
+            )))
+        )
+    return(df)
+}
+
+get_names_identification <- function(PhenoRobject = NULL) {
+    if (is.null(PhenoRobject)) {
+        stop("Error: 'PhenoRobject' cannot be NULL.")
+    }
+    if (is.null(PhenoRobject$Identification)) {
+        stop("Error: 'PhenoRobject$Identification' cannot be NULL.")
+    }
+    result <- c()
+    for (i in seq_along(PhenoRobject$Identification)) {
+        result <- c(result, PhenoRobject$Identification[[i]]$name)
+    }
+    return(result)
 }

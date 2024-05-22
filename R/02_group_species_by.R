@@ -19,13 +19,13 @@
 #' @import dplyr
 #' @import tidyr
 #' @export
-select_species_by_phenotype <- function(PhenoRobject = NULL, columnPhenotype = `Oil-body-type`, columnOrthofinderID = `OrthofinderID`, type = NULL) {
+select_species_by_phenotype <- function(PhenoRobject = NULL, columnPhenotype = "Oil-body-type", columnID = "OrthofinderID", type = NULL) {
     if (is.null(PhenoRobject) || is.null(PhenoRobject$genomesData)) {
         stop("Please provide the PhenoRobject parameter and make sure PhenoRobject$genomesData is not null.")
     }
     result <- PhenoRobject$genomesData %>%
-        filter({{ columnPhenotype }} == type) %>%
-        select({{ columnOrthofinderID }})
+        filter(!!sym(columnPhenotype) == type) %>%
+        select(!!sym(columnID))
     result <- table_as_character(table = result)
 
     PhenoRobject$Phenotypes[[type]] <- result
