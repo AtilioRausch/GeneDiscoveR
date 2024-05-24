@@ -1,31 +1,40 @@
-server <- function(input, output, session) {
-    # Side bar
+server_genediscover <- function(input, output, session) {
     output$menu <- renderMenu({
         sidebarMenu(
             menuItem("Plot",
                 tabName = "plot", icon = icon("bar-chart"), selected = TRUE,
                 startExpanded = TRUE
             ),
-            menuItem("Table of HOGs selected", tabName = "tableHOG", icon = icon("th"))
+            menuItem("Table of HOGs", tabName = "tableHOG", icon = icon("th"))
         )
     })
     isolate({
         updateTabItems(session, "tabs", "m2")
     })
 
+    set_ggplot2_theme()
     observeEvent(event_data("plotly_selected", source = "volcano"), {
         event <- event_data("plotly_selected", source = "volcano")
-        if (!is.null(event)) {
-            showNotification("Indication: The HOGs have been selected, you can view them in the ‘Table of selected HOGs’ tab.", type = "default", duration = 5)
+        if (!is.null(event) && length(event$pointNumber) > 0) {
+            showNotification("Indication: The HOGs have been selected, you can view them in the ‘Table of selected HOGs’ tab.", type = "default", duration = 10)
         }
     })
 
     selectedData <- reactive({
         event <- event_data("plotly_selected", source = "volcano")
         if (!is.null(event) && length(event$pointNumber) > 0) {
-            selected_indices <- event$pointNumber + 1
-            excluded_columns <- grepl("^fisherResult", names(data)) | grepl("^logodd", names(data))
-            data[selected_indices, !excluded_columns]
+            dataselect <- read_tsv(file = paste0(tempdir(), "/data-select.tmp"))
+            dataunselect <- read_tsv(file = paste0(tempdir(), "/data-unselect.tmp"))
+
+            selected_data <- lapply(1:nrow(event), function(i) {
+                if (event$curveNumber[i] == 0) {
+                    dataunselect[event$pointNumber[i] + 1, ]
+                } else if (event$curveNumber[i] == 1) {
+                    dataselect[event$pointNumber[i] + 1, ]
+                }
+            })
+            # Convertir la lista a un dataframe
+            do.call(rbind, selected_data)
         } else {
             data.frame()
         }
@@ -54,35 +63,47 @@ server <- function(input, output, session) {
             name <- input$name
             # Obtiene el dataframe por su nombre
             if (class(data) == "GeneDiscoveR" && is.character(name) && name %in% get_names_identification(GeneDiscoveRobject)) {
-                showNotification("Success: The GeneDiscoveR object and the identification name were entered correctly. Please wait a moment!.", type = "message", duration = NULL)
+                showNotification("Success: The GeneDiscoveR object and the identification name were entered correctly. Please wait a moment!.", type = "message", duration = 10)
 
                 GeneDiscoveRidentification <- get_identification(GeneDiscoveRobject = GeneDiscoveRobject, name = name)
                 data <- data$RunActive$N0Active
 
-                write_tsv(data, file = paste0(tempdir(), "/data.txt"))
                 saveRDS(GeneDiscoveRidentification, file = paste0(tempdir(), "/data.rds"))
 
                 data <- data %>%
                     mutate(
-                        logoddRatioFisher = case_when(
+                        "log-odds-ratio" = case_when(
                             !!sym(GeneDiscoveRidentification$columns[5]) == 0 ~ -5,
                             !!sym(GeneDiscoveRidentification$columns[5]) == Inf ~ 5,
                             is.finite(!!sym(GeneDiscoveRidentification$columns[5])) ~ log(!!sym(GeneDiscoveRidentification$columns[5]))
                         )
                     )
+                data <- data %>%
+                    rename(
+                        "p-value" = GeneDiscoveRidentification$columns[4],
+                        "odds-ratio" = GeneDiscoveRidentification$columns[5]
+                    ) %>%
+                    mutate("contains-gene" = FALSE)
+                data$original_index <- seq_len(nrow(data))
+                write_tsv(data[data$`contains-gene` == TRUE, ], file = paste0(tempdir(), "/data-select.tmp"))
+                write_tsv(data[data$`contains-gene` == FALSE, ], file = paste0(tempdir(), "/data-unselect.tmp"))
+                data <- data[order(data$original_index), ]
                 output$plot <- renderPlotly({
-                    g1 <- ggplot() +
-                        geom_point(aes(x = -log(data[[GeneDiscoveRidentification$columns[4]]]), y = data$logoddRatioFisher), color = "#696D7D") +
+                    g1 <- ggplot(data) +
+                        geom_point(aes(x = -log(`p-value`), y = `log-odds-ratio`)) +
                         coord_flip() +
-                        geom_hline(yintercept = 0, linetype = "dotted", col = "red") +
-                        geom_vline(xintercept = 2.9957, linetype = "dotted", col = "red") +
-                        annotate("text", x = 2.9957, y = 0, label = "p-value <= 0.05", vjust = 1.5, color = "black") +
+                        geom_hline(yintercept = 0, linetype = "dotted", col = "black") +
+                        geom_vline(xintercept = 2.9957, linetype = "dotted", col = "black") +
+                        annotate("text", x = 3.1, y = 1, label = "p-value <= 0.05", vjust = 1.5, color = "black") +
                         annotate("text", x = 8, y = 1, label = "OddRatio >= 1", color = "black") +
-                        ylab("") +
-                        xlab("-log(p-value)")
-                    ggplotly(g1, source = "volcano", dynamicTicks = TRUE)
+                        ylab("log(Odds Ratio)") +
+                        xlab("-log(p-value)") +
+                        scale_color_jama()
+                    p <- ggplotly(g1, source = "volcano", dynamicTicks = TRUE)
+                    event_register(p, "plotly_selected")
+                    p
                 })
-                showNotification("Indication: you can select the HOGs in the Volcano plot!", type = "message", duration = NULL)
+                showNotification("Indication: you can select the HOGs in the Volcano plot!", type = "message", duration = 10)
             } else {
                 if (class(data) == "GeneDiscoveR") {
                     showNotification("Error: The entered name is not the name of a GeneDiscoveR object!", type = "error")
@@ -100,38 +121,33 @@ server <- function(input, output, session) {
             splitGenes <- str_split(input$genes, ",")[[1]]
             splitGenes <- trimws(splitGenes)
 
-            showNotification("Success: The GeneDiscoveR object and the identification name were entered correctly. Please wait a moment!.", type = "message", duration = NULL)
+            showNotification("Success: The GeneDiscoveR object and the identification name were entered correctly. Please wait a moment!.", type = "message", duration = 10)
 
             data <- data %>%
                 mutate(
                     "contains-gene" = rowSums(sapply(splitGenes, function(gene) apply(data, 1, function(row) any(grepl(gene, row))))) > 0
                 )
-            data <- data %>%
-                mutate(
-                    "log-odds-ratio" = case_when(
-                        !!sym(GeneDiscoveRidentification$columns[5]) == 0 ~ -5,
-                        !!sym(GeneDiscoveRidentification$columns[5]) == Inf ~ 5,
-                        is.finite(!!sym(GeneDiscoveRidentification$columns[5])) ~ log(!!sym(GeneDiscoveRidentification$columns[5]))
-                    )
-                )
-            data <- data %>%
-                rename(
-                    "p-value" = GeneDiscoveRidentification$columns[4],
-                    "odds-ratio" = GeneDiscoveRidentification$columns[5]
-                )
+            data$original_index <- seq_len(nrow(data))
+            write_tsv(data[data$`contains-gene` == TRUE, ], file = paste0(tempdir(), "/data-select.tmp"))
+            write_tsv(data[data$`contains-gene` == FALSE, ], file = paste0(tempdir(), "/data-unselect.tmp"))
 
             output$plot <- renderPlotly({
                 g1 <- ggplot(data = data) +
-                    geom_point(aes(x = -log(`p-value`), y = `log-odds-ratio`, color = `contains-gene`)) +
+                    geom_point(aes(x = -log(`p-value`), y = `log-odds-ratio`, color = factor(`contains-gene`, labels = c("No", "Yes")))) +
                     coord_flip() +
                     geom_hline(yintercept = 0, linetype = "dotted", col = "black") +
                     geom_vline(xintercept = 2.9957, linetype = "dotted", col = "black") +
-                    annotate("text", x = 2.9957, y = 0, label = "p-value <= 0.05", vjust = 1.5, color = "black") +
+                    annotate("text", x = 3.1, y = 1, label = "p-value <= 0.05", vjust = 1.5, color = "black") +
                     annotate("text", x = 8, y = 1, label = "Odds Ratio >= 1", color = "black") +
                     ylab("log(Odds Ratio)") +
-                    xlab("-log(p-value)")
+                    xlab("-log(p-value)") +
+                    scale_color_jama() +
+                    guides(color = guide_legend(title = "Selected")) +
+                    theme(legend.position.inside = c(1, 0.9), legend.justification = c("right", "top"), legend.box.just = "right")
 
-                ggplotly(g1, source = "volcano", dynamicTicks = TRUE)
+                p <- ggplotly(g1, source = "volcano", dynamicTicks = TRUE)
+                event_register(p, "plotly_selected")
+                p
             })
         }
     })
