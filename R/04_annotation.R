@@ -75,3 +75,4 @@ filter_oneGene_per_OG_HOG <- function(tableOG_HOG = NULL) {
         left_join(tableOG_HOG, by = c("OG", "HOG", "Gene"))
     return(result)
 }
+

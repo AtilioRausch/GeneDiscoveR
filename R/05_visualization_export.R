@@ -86,3 +86,6 @@ get_medians_statistics <- function(GeneDiscoveRobject = NULL) {
     }
     return(GeneDiscoveRobject$runsData$medians)
 }
+
+
+

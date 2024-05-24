@@ -1,83 +1,54 @@
 library(shiny)
 library(plotly)
 library(DT)
+library(shinydashboard)
+
 launch_web_app <- function() {
-  # Definir la interfaz de usuario (UI)
-  ui <- fluidPage(
-    tags$head(
-      tags$style(HTML("
-       #myImage {
-      display: block;
-      margin-top: auto;
-      margin-left: auto;
-      margin-right: auto;
-      max-width: 75%; /* Asegura que la imagen no sea más ancha que el contenedor */
-      height: auto; /* Mantiene la relación de aspecto de la imagen */
-    }
-    .shiny-image-output {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100%;
-      }
-    ")),
-      tags$script(HTML('
-      $(document).on("shiny:connected", function() {
-        var plotContainer = document.querySelector(".plot-container");
-        var aspectRatio = 4 / 3;
-        var height = plotContainer.clientHeight;
-        var width = height * aspectRatio;
-        plotContainer.style.width = width + "px";
-      });
-    ')),
+  ui <- dashboardPage(
+    skin = "black",
+    dashboardHeader(title = span(img(src = "/home/atilio/Escritorio/Git/GeneDiscoveR/R/logo.png", height = 35), "GeneDiscoveR")),
+    dashboardSidebar(
+      sidebarMenu(id = "tabs"),
+      sidebarMenuOutput("menu")
     ),
-    div(
-      style = "display: flex; justify-content: space-around; align-items: center;",
-      titlePanel("GeneDiscoveR: Interactive Volcano Plot and Table", windowTitle = "GeneDiscoveR: Interactive Volcano Plot and Table"),
-      div(
-        class = "container", # Estilo para centrar y ajustar la imagen
-        uiOutput("myImage")
-      ),
-    ),
-    div(
-      style = "display: flex; justify-content: space-between;",
-      div(
-        style = "display: flex; justify-content: center; align-items: center; flex-wrap:wrap", # Estilo para maximizar el tamaño del gráfico
-        textInput("dataframeName", "Enter the name of a GeneDiscoveR object:"),
-        textInput("name", "Enter the name of an identification:"),
-        actionButton("submit", "Load", class = "btn-primary"),
-      )
-    ),
-    tabsetPanel(
-      tabPanel(
-        "Volcano Plot",
-        div(
-          class = "plot-container",
-          style = "display: flex; justify-content: center; align-items: center; height: 100vh;", # Estilo para maximizar el tamaño del gráfico
-          plotlyOutput("plot", height = "100%")
+    dashboardBody(
+      tabItems(
+        # First tab content
+        tabItem(
+          tabName = "plot",
+          fluidRow(
+            column(
+              width = 6,
+              box(
+                title = "Instructions", status = "info", solidHeader = TRUE, width = NULL
+              ),
+              box(
+                title = "Step 1: inputs", status = "warning", solidHeader = TRUE, width = NULL,
+                textInput("dataframeName", "Enter the name of a GeneDiscoveR object:", value = "GeneDiscoveRobject"),
+                textInput("name", "Enter the name of an identification:", value = "Self-compatible"),
+                actionButton("submit", "Load", class = "btn-primary", icon = icon("play")),
+              ),
+              box(
+                title = "Step 3: gene selector", status = "primary", solidHeader = TRUE, width = NULL,
+                textInput("genes", 'Enter gene IDs separated by ",":', value = "Mp1g25500.1"),
+                actionButton("submitgenes", "Load genes", class = "btn-primary", icon = icon("fa-dna")),
+              ),
+            ),
+            box(
+              title = "Step 2: Volcano plot", status = "primary", solidHeader = TRUE,
+              collapsible = TRUE,
+              plotlyOutput("plot", height = "80vh") # Set height to "auto" for adjustable height
+            ),
+          ),
+        ),
+
+        # Second tab content
+        tabItem(
+          tabName = "tableHOG",
+          dataTableOutput("table")
         )
-      ),
-      tabPanel(
-        "Table of selected HOGs",
-        dataTableOutput("table")
       )
     )
   )
-  # fluidPage(
-  #   #titlePanel("Gráfico Interactivo y Tabla"),
-  #   fluidRow(
-  #     column(
-  #       width = 12, # Para pantallas grandes
-  #       class = "col-md-6 col-sm-12", # 6 columnas en pantallas medianas y más grandes, 12 columnas en pantallas pequeñas
-  #       plotlyOutput("plot", height = "100%")
-  #     ),
-  #     column(
-  #       width = 12, # Para pantallas grandes
-  #       class = "col-md-6 col-sm-12", # 6 columnas en pantallas medianas y más grandes, 12 columnas en pantallas pequeñas
-  #       tableOutput("table")
-  #     )
-  #   )
-  # )
-  # Lanzar la aplicación Shiny
-  shinyApp(ui = ui, server = server)
+  shinyApp(ui, server)
 }

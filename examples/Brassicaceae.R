@@ -4,8 +4,8 @@ library(tidyverse)
 library(ggsci)
 
 # Directory where the data is located
-N0Dir <- "/home/atilio/Descargas/Results_Jun02/"
-dataTSV <- "/home/atilio/Descargas/Results_Jun02/table_traits_selfcomp.tsv"
+N0Dir <- "/home/atilio/Descargas/Orthofinder_Brassicaceae-20240516T110742Z-001/Orthofinder_Brassicaceae/Results_Jun02/"
+dataTSV <- "/home/atilio/Descargas/Orthofinder_Brassicaceae-20240516T110742Z-001/Orthofinder_Brassicaceae/Results_Jun02/table_traits_selfcomp.tsv"
 
 GeneDiscoveRobject <- GeneDiscoveR(
     N0sDir = N0Dir,
@@ -31,7 +31,7 @@ GeneDiscoveRobject <- gene_identification_by_phenotype(
     formula = as.formula("1 ~ 0"),
     statistic = "Fisher",
     name = "Self-compatible",
-    cores = 8
+    cores = 4
 )
 
 GeneDiscoveRobject <- select_genes_by_phenotype(GeneDiscoveRobject,
@@ -54,5 +54,5 @@ View(get_filtered_genes_table(GeneDiscoveRobject, name = "Self-compatible", pval
 filteredTable <- get_filtered_genes_table(GeneDiscoveRobject, name = "Self-compatible", pvalue = 0.05, oddsRatio = 1, sign = ">=")
 write_csv(filteredTable, "/home/atilio/Descargas/Results_Jun02/filteredTable-2.csv")
 
-
 run_web_app()
+
