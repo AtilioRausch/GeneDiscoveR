@@ -29,7 +29,7 @@
         updateTabItems(session, "tabs", "m2")
     })
 
-    set_ggplot2_theme()
+    .set_ggplot2_theme()
     observeEvent(event_data("plotly_selected", source = "volcano"), {
         event <- event_data("plotly_selected", source = "volcano")
         if (!is.null(event) && length(event$pointNumber) > 0) {
