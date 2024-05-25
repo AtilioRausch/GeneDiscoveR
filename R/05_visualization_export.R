@@ -36,7 +36,7 @@ run_genediscover_web_app <- function() {
             stop("Failed to install the 'DT' package.")
         }
     }
-    launch_genediscover_web_app()
+    .launch_genediscover_web_app()
 }
 
 #' Get identification by name
@@ -180,6 +180,7 @@ get_filtered_genes_table <- function(GeneDiscoveRobject = NULL, name = NULL, pva
 #' # Volcano plot
 #' plot <- plot_genediscover_volcano(GeneDiscoveRobject, name = "PerOBtype")
 #' # Output: A ggplot object representing the volcano plot.
+#' plot
 #' @import ggplot2 dplyr ggsci
 #' @export
 plot_genediscover_volcano <- function(GeneDiscoveRobject = NULL, name = NULL) {

@@ -44,4 +44,5 @@ GeneDiscoveRobject <- gene_identification_by_phenotype(GeneDiscoveRobject = Gene
 # Volcano plot
 plot <- plot_genediscover_volcano(GeneDiscoveRobject, name = "PerOBtype")
 # Output: A ggplot object representing the volcano plot.
+plot
 }

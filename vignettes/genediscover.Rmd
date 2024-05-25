@@ -1,25 +1,66 @@
-# Input files ---------------------------------------------------------------
+---
+title: "Identifying genes associated with oil body types in liverworts with GeneDiscoveR"
+author: 
+  - name: Atilio O. Rausch
+    affiliation: 
+    - Instituto de Agrobiotecnología del Litoral (IAL-CONICET), Santa Fe, Argentina
+output: 
+  BiocStyle::html_document:
+    toc: true
+    toc_float: true
+    number_sections: yes
+vignette: >
+  %\VignetteIndexEntry{Inference and Analysis of Synteny Networks}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
 
-# Run multiple findind of orthologs with different Inflation values
-# Execute the following command in the terminal to run:
-# snakemake --use-conda --cores 32 --snakefile run_orthofinder.py --configfile config.yaml
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+    collapse = TRUE,
+    comment = "#>",
+    crop = NULL
+)
+```
 
-# Reorganize the data of the orthofinder results with the following bash scripts:
-# bash/collect_rename_N0s_files.sh
-# bash/collect_rename_overalls_files.sh
+# Introduction
 
-# Load the data into R -----------------------------------------------------
 
-# Install and import GeneDiscoveR package
+
+## Input files
+
+Run multiple finding of orthologs with different Inflation values. Execute the following command in the terminal to run:
+
+\`\`\`bash
+snakemake --use-conda --cores 32 --snakefile run_orthofinder.py --configfile config.yaml
+\`\`\`
+
+Reorganize the data of the orthofinder results with the following bash scripts:
+
+\`\`\`bash
+bash/collect_rename_N0s_files.sh
+bash/collect_rename_overalls_files.sh
+\`\`\`
+
+## Load the data into R
+
+Install and import GeneDiscoveR package.
+
+\`\`\`{r}
 invisible(lapply(c("usethis", "devtools"), library, character.only = TRUE))
 devtools::install_github("AtilioRausch/GeneDiscoveR")
 library(GeneDiscoveR)
+\`\`\`
 
-# Directory where the data is located
+Directory where the data is located.
+
+\`\`\`{r}
 overallsDir <- system.file("extdata", "Comparatives-1dot3-6", package = "GeneDiscoveR")
 N0sDir <- system.file("extdata", "N0-1dot3-6", package = "GeneDiscoveR")
 dataFile <- system.file("extdata", "annotatedCDSs.tsv", package = "GeneDiscoveR")
+\`\`\`
 
+\`\`\`{r}
 GeneDiscoveRobject <- GeneDiscoveR(
   overallsDir = overallsDir,
   N0sDir = N0sDir,
@@ -29,38 +70,44 @@ GeneDiscoveRobject <- GeneDiscoveR(
   stepInflation = 0.1,
   orthologsTool = "OrthoFinder"
 )
+\`\`\`
 
-# Calculate statistics for each execution of Orthofinder for selecting the best inflation value
+Calculate statistics for each execution of Orthofinder for selecting the best inflation value.
 
+\`\`\`{r}
 GeneDiscoveRobject <- calculate_overall_statistics(GeneDiscoveRobject, cores = 8)
-#    user  system elapsed                        1 core 4Ghz
-#   1.409   0.028   1.423
-#    user  system elapsed                        8 cores 4Ghz
-#   0.089   0.018   1.579
-
 GeneDiscoveRobject <- calculate_median_statistics(GeneDiscoveRobject, cores = 8)
-#    user  system elapsed                        1 core 4Ghz
-#  45.191   0.104  41.457
-#    user  system elapsed                        8 cores 4Ghz
-#   0.144   0.008  12.612
+\`\`\`
 
-# Plot the data -----------------------------------------------------------
+Plot the data.
+
+\`\`\`{r}
 plotAllSpeciesOGs <- plot_allSpeciesOGs_sOGs_per_inflation(GeneDiscoveRobject)
 plotOGsAndHOGs <- plot_OGs_HOGs_per_inflation(GeneDiscoveRobject)
 
 plotAllSpeciesOGs
 plotOGsAndHOGs
-# Read N0 file (result of Orthofinder)-----------------------------------------------------------
+\`\`\`
+
+Read N0 file (result of Orthofinder).
+
+\`\`\`{r}
 GeneDiscoveRobject <- set_run_active(GeneDiscoveRobject, InflationValue = 1.8)
+\`\`\`
 
-# Plot the data with the selected inflation value -----------------------------------------------------------
+Plot the data with the selected inflation value.
+
+\`\`\`{r}
 plotAllSpeciesOGs <- plot_allSpeciesOGs_sOGs_per_inflation(GeneDiscoveRobject)
 plotOGsAndHOGs <- plot_OGs_HOGs_per_inflation(GeneDiscoveRobject)
 
 plotAllSpeciesOGs
 plotOGsAndHOGs
+\`\`\`
 
-# Select species by phenotype -----------------------------------------------------------
+Select species by phenotype.
+
+\`\`\`{r}
 GeneDiscoveRobject <- select_species_by_phenotype(
   GeneDiscoveRobject = GeneDiscoveRobject,
   columnPhenotype = "Oil-body-type",
@@ -73,11 +120,11 @@ GeneDiscoveRobject <- select_species_by_phenotype(
   columnID = "OrthofinderID",
   type = "many_in_all_cells"
 )
+\`\`\`
 
-# For clean phenotypes
-# GeneDiscoveRobject <- clean_phenotypes(GeneDiscoveRobject)
+Identify genes by phenotype.
 
-# Identify genes by phenotype -----------------------------------------------------------
+\`\`\`{r}
 GeneDiscoveRobject <- gene_identification_by_phenotype(
   GeneDiscoveRobject = GeneDiscoveRobject,
   formula = as.formula("many_in_all_cells ~ one_in_specialized_cell"),
@@ -85,52 +132,77 @@ GeneDiscoveRobject <- gene_identification_by_phenotype(
   name = "PerType",
   cores = 8
 )
-#    user  system elapsed                        1 core 4Ghz
-#  61.421   0.003  61.432
-#    user  system elapsed                        8 cores 4Ghz
-# 107.199   4.617  16.453
+\`\`\`
 
+Select genes by phenotype with p-value <= 0.05 and odds ratio >= 1.
 
-# Select genes by phenotype with p-value <= 0.05 and odds ratio >= 1 -----------------------------------------------------------
+\`\`\`{r}
 GeneDiscoveRobject <- select_genes_by_phenotype(GeneDiscoveRobject,
   pvalue = 0.05,
   oddsRatio = 1,
   sign = ">=",
   name = "PerType"
 )
+\`\`\`
 
-# Map annotation-----------------------------------------------------------
-# Import Marchantia polymorpha annotation file from MarpolBase v6.1
-annotationFile <- system.file("extdata", "MpTak_v6.1_func_annotation_1line.tsv", package = "GeneDiscoveR")
+Map annotation. Import Marchantia polymorpha annotation file from MarpolBase v6.1.
+
+\`\`\`{r}
+annotationFile <- "/home/atilio/Escritorio/LiverwortGitHub/GeneDiscoveR/inst/extdata/MpTak_v6.1_func_annotation_1line.tsv"
 GeneDiscoveRobject <- set_annotation_file(GeneDiscoveRobject, annotationFile = annotationFile)
+\`\`\`
 
-# Select filtered gene index
+Select filtered gene index.
+
+\`\`\`{r}
 indexFilteredGenes <- select_filtered_gene_index(GeneDiscoveRobject, name = "PerType", pvalue = 0.05, oddsRatio = 1, sign = ">=")
+\`\`\`
 
-# Map annotation to the filtered genes. indexFilteredGenes is the index of the filtered genes, if NULL, the annotation is mapped to the complete table
+Map annotation to the filtered genes. indexFilteredGenes is the index of the filtered genes, if NULL, the annotation is mapped to the complete table.
+
+\`\`\`{r}
 GeneDiscoveRobject <- map_annotation(
   GeneDiscoveRobject = GeneDiscoveRobject,
   indexFilteredGenes = indexFilteredGenes,
   specieWithAnnotation = "MpTAKv6-Marchantia_polymorpha_rudelaris",
   oneColumn = TRUE
 )
-# Obtain the filtered genes table with annotation
-filteredTable <- get_filtered_genes_table(GeneDiscoveRobject, name = "PerType", pvalue = 0.05, oddsRatio = 1, sign = ">=")
+\`\`\`
 
-# Map annotation to the complete table. indexFilteredGenes is NULL
+Obtain the filtered genes table with annotation.
+
+\`\`\`{r}
+filteredTable <- get_filtered_genes_table(GeneDiscoveRobject, name = "PerType", pvalue = 0.05, oddsRatio = 1, sign = ">=")
+\`\`\`
+
+Map annotation to the complete table. indexFilteredGenes is NULL.
+
+\`\`\`{r}
 GeneDiscoveRobject <- map_annotation(
   GeneDiscoveRobject = GeneDiscoveRobject,
   indexFilteredGenes = NULL,
   specieWithAnnotation = "MpTAKv6-Marchantia_polymorpha_rudelaris",
   oneColumn = TRUE
 )
-# Obtain the complete table with annotation
+\`\`\`
+
+Obtain the complete table with annotation.
+
+\`\`\`{r}
 completeTable <- get_complete_table(GeneDiscoveRobject)
+\`\`\`
 
-# Plot the volcano plot -----------------------------------------------------------
+Plot the volcano plot.
+
+\`\`\`{r}
 plot_genediscover_volcano(GeneDiscoveRobject, name = "PerType")
+\`\`\`
 
-# Run the GeneDiscoveR web app -----------------------------------------------------------
+Run the GeneDiscoveR web app.
+
+\`\`\`{r}
 run_genediscover_web_app()
+\`\`\`
 
-# End of the script -----------------------------------------------------------
+End of the script.
+\`\`\`
