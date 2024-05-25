@@ -1,4 +1,20 @@
-server_genediscover <- function(input, output, session) {
+#' Server function for GeneDiscoveR
+#'
+#' This function defines the server logic for the GeneDiscoveR application.
+#' It handles the rendering of the menu, the selection of HOGs in the volcano plot,
+#' and the filtering of data based on selected genes.
+#'
+#' @param input The input values from the UI.
+#' @param output The output objects to be rendered in the UI.
+#' @param session The session object for the Shiny application.
+#'
+#' @return None
+#'
+#' @examples
+#' \dontrun{
+#' .server_genediscover(input, output, session)
+#' }
+.server_genediscover <- function(input, output, session) {
     output$menu <- renderMenu({
         sidebarMenu(
             menuItem("Plot",
@@ -25,12 +41,13 @@ server_genediscover <- function(input, output, session) {
         if (!is.null(event) && length(event$pointNumber) > 0) {
             dataselect <- read_tsv(file = paste0(tempdir(), "/data-select.tmp"))
             dataunselect <- read_tsv(file = paste0(tempdir(), "/data-unselect.tmp"))
-
+            excludecols <- c("original_index", "contains-gene", "log-odds-ratio")
+            excludecols <- c(excludecols, grep("^fisherResult", names(dataselect), value = TRUE))
             selected_data <- lapply(1:nrow(event), function(i) {
                 if (event$curveNumber[i] == 0) {
-                    dataunselect[event$pointNumber[i] + 1, ]
+                    dataunselect[event$pointNumber[i] + 1, -which(names(dataunselect) %in% excludecols)]
                 } else if (event$curveNumber[i] == 1) {
-                    dataselect[event$pointNumber[i] + 1, ]
+                    dataselect[event$pointNumber[i] + 1, -which(names(dataselect) %in% excludecols)]
                 }
             })
             # Convertir la lista a un dataframe
@@ -41,7 +58,7 @@ server_genediscover <- function(input, output, session) {
     })
 
     # Renderiza la tabla con los datos seleccionados
-    output$table <- renderDataTable({
+    output$table <- renderDT({
         datatable(
             selectedData(),
             options = list(
@@ -65,7 +82,7 @@ server_genediscover <- function(input, output, session) {
             if (class(data) == "GeneDiscoveR" && is.character(name) && name %in% get_names_identification(GeneDiscoveRobject)) {
                 showNotification("Success: The GeneDiscoveR object and the identification name were entered correctly. Please wait a moment!.", type = "message", duration = 10)
 
-                GeneDiscoveRidentification <- get_identification(GeneDiscoveRobject = GeneDiscoveRobject, name = name)
+                GeneDiscoveRidentification <- .get_identification(GeneDiscoveRobject = GeneDiscoveRobject, name = name)
                 data <- data$RunActive$N0Active
 
                 saveRDS(GeneDiscoveRidentification, file = paste0(tempdir(), "/data.rds"))
@@ -87,6 +104,7 @@ server_genediscover <- function(input, output, session) {
                 data$original_index <- seq_len(nrow(data))
                 write_tsv(data[data$`contains-gene` == TRUE, ], file = paste0(tempdir(), "/data-select.tmp"))
                 write_tsv(data[data$`contains-gene` == FALSE, ], file = paste0(tempdir(), "/data-unselect.tmp"))
+                write_tsv(data, file = paste0(tempdir(), "/data.tmp"))
                 data <- data[order(data$original_index), ]
                 output$plot <- renderPlotly({
                     g1 <- ggplot(data) +
@@ -116,7 +134,7 @@ server_genediscover <- function(input, output, session) {
 
     observeEvent(input$submitgenes, {
         if (is.character(input$genes) && input$genes != "") {
-            data <- read_tsv(file = paste0(tempdir(), "/data.txt"))
+            data <- read_tsv(file = paste0(tempdir(), "/data.tmp"))
             GeneDiscoveRidentification <- readRDS(paste0(tempdir(), "/data.rds"))
             splitGenes <- str_split(input$genes, ",")[[1]]
             splitGenes <- trimws(splitGenes)

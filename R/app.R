@@ -1,9 +1,16 @@
-library(shiny)
-library(plotly)
-library(DT)
-library(shinydashboard)
-
-launch_genediscover_web_app <- function() {
+#' Launches the GeneDiscoveR Web App
+#'
+#' This function creates and launches the GeneDiscoveR web application. The web app provides a user interface for analyzing gene data using the GeneDiscoveR package.
+#'
+#' @return NULL
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' .launch_genediscover_web_app()
+#' }
+#' @import shiny shinydashboard plotly DT
+.launch_genediscover_web_app <- function() {
   ui <- dashboardPage(
     skin = "black",
     dashboardHeader(
@@ -34,16 +41,17 @@ launch_genediscover_web_app <- function() {
                 title = "Instructions", status = "info", solidHeader = TRUE, width = NULL,
                 # Agrega el logo a la derecha
                 tags$div(
-                  tags$img(src = "www/logo.png", height = "35", style = "float: right;"),
+                  tags$img(src = "www/nombre_de_tu_imagen.png", height = "auto", width = "30%", style = "float: right; padding-left: 20px;"),
                   # Agrega la lista de instrucciones a la izquierda
+                  tags$p("Welcome to the GeneDiscoveR work dashboard. To analyze your data, please follow these instructions:"),
                   tags$ul(
-                    tags$li("Step 1: Enter the name of a GeneDiscoveR object and an identification."),
-                    tags$li("Step 2: Click 'Load' to load the data."),
-                    tags$li("Step 3: Enter gene IDs separated by ','."),
-                    tags$li("Step 4: Click 'Load genes' to load the genes."),
-                    tags$li("Step 5: View the Volcano plot on the right.")
+                    tags$li("Step 1: Enter the name of the GeneDiscoveR object and the name of the identification made with it in the “Step 1: Inputs” window. Then click Load."),
+                    tags$li("Step 2: The associated Volcano plot will be loaded in “Step 2: Volcano plot”. In the plot, you can select HOGs using the Box select option and view them in the Table of HOGs section."),
+                    tags$li("Step 3: Specify the names of the genes to be sectioned. For multiple selections, separate the IDs with a comma (,). When you click Load genes, the Volcano plot will be updated to allow their identification."),
+                    tags$p("At any time, after selecting with Box select, you can go to the Table of HOGs section to view the data table, filter it, and/or export it.")
                   )
-                )
+                ),
+                style = "overflow:auto;"
               ),
               box(
                 title = "Step 1: Inputs", status = "warning", solidHeader = TRUE, width = NULL,
@@ -73,5 +81,5 @@ launch_genediscover_web_app <- function() {
       )
     )
   )
-  shinyApp(ui, server_genediscover)
+  shinyApp(ui, .server_genediscover)
 }
