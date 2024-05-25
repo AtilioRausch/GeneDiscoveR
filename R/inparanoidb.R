@@ -5,7 +5,7 @@
 #' @param directory The directory where the inParanoid files are located.
 #'
 #' @return A merged dataframe containing the data from all the inParanoid files.
-#'
+#' @keywords internal
 #' @examples
 #' # Set the directory where the inParanoid files are located
 #' directory <- system.file("extdata", "inparanoidbFiles", package = "GeneDiscoveR")
@@ -19,6 +19,7 @@
 #' }
 #'
 #' @import readr dplyr stringr
+#' @export
 .merge_inParanoid_files <- function(directory) {
     options(readr.show_progress = FALSE)
     file_list <- list.files(directory, pattern = "^inParanoid.*", full.names = TRUE)
@@ -41,6 +42,7 @@
 #' @param dfMerge A data frame containing the merged data from Ortholog Set A and Ortholog Set B.
 #' @param cores The number of cores to use for parallel processing.
 #' @return A list of unique indices of orthologs in Ortholog Set B that match the values in Ortholog Set A.
+#' @keywords internal
 #' @examples
 #' df <- data.frame(OrtoA = c("A", "B", "C"), OrtoB.1 = c("A", "B", "D"), OrtoB.2 = c("B", "C", "E"))
 #' .check_OrtoA_in_OrtoB(df, cores = 4)
@@ -52,11 +54,12 @@
 #' #
 #' # [[3]]
 #' # integer(0)
-#'
 #' @import foreach
 #' @import doParallel
 #' @import stringr
+#' @import parallel
 #' @keywords internal
+#' @export
 .check_OrtoA_in_OrtoB <- function(dfMerge, cores = 1) {
     cl <- makeCluster(cores)
     registerDoParallel(cl)
@@ -84,10 +87,13 @@
 #'
 #' @param x A numeric vector
 #' @return A numeric vector containing only the even values from the input vector
+#' @keywords internal
 #' @examples
 #' x <- c(1, 2, 3, 4, 5, 6)
-#' get_even_values(x)
+#' .get_even_values(x)
+#'
 #' # Output: 2 4 6
+#' @export
 .get_even_values <- function(x) {
     odd_indices <- seq_along(x) %% 2 == 0
     x[odd_indices]
@@ -102,7 +108,7 @@
 #'
 #' @param dfMerge A data frame containing the data to be merged
 #' @param resultados A list of results used for merging groups
-#'
+#' @keywords internal
 #' @return A list containing two data frames: \code{dfMergemodifyunprocess} and
 #' \code{dfMergemodifyprocess}
 #'
@@ -116,6 +122,7 @@
 #' resultados <- list(c("1\t2\t3", "4\t5\t6"), c("7\t8\t9"))
 #' .merge_groups(df, resultados)
 #' }
+#' @export
 .merge_groups <- function(dfMerge, resultados) {
     dfMergemodifyunprocess <- c()
     dfMergemodifyprocess <- c()
@@ -170,11 +177,14 @@
 #' @param dfMergemodify The dataframe to be modified and merged.
 #' @param cores The number of cores to be used for parallel processing. Default is 1.
 #' @return The modified and merged dataframe.
+#' @keywords internal
 #' @import dplyr
 #' @import purrr
 #' @import foreach
 #' @import doParallel
+#' @import parallel
 #' @importFrom purrr map
+#' @export
 .merge_groups_parallel <- function(dfMergemodify, cores = 1) {
     ortoB_cols <- grep("^OrtoBsplit", names(dfMergemodify), value = TRUE)
 
@@ -224,12 +234,13 @@
 #' @param columnID The column name in the datafile that contains the orthologous gene IDs.
 #'
 #' @return The updated dfMerge dataframe with cleaned orthologous gene IDs.
-#'
+#' @keywords internal
 #' @examples
 #' # Example usage of the update_dfMerge function
 #' \dontrun{
 #' df <- .update_dfMerge(dfMerge, "AT", datafile, "geneID")
 #' }
+#' @export
 .update_dfMerge <- function(dfMerge, at_prefix, datafile, columnID) {
     dfMerge1 <- dfMerge
     ortoB_cols <- grep("^OrtoBsplit", names(dfMerge), value = TRUE)

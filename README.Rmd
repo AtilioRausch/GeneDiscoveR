@@ -35,8 +35,8 @@ For this, scripts can be found in [/Python](https://github.com/AtilioRausch/Gene
 - **Import ortholog definitions and phenotype or treatment table:** From the ortholog definitions using OrthoFinder
  or [Phytozome-inParanoiDB](https://genome.jgi.doe.gov/portal/pages/dynamicOrganismDownload.jsf?organism=Phytozome) 
  and a table with species IDs and treatments or phenotypes, you can start the analyses with `GeneDiscoveR`;
-- **Network Select the inflation value (I):** If you performed multiple runs of OrthoFinder, as recommended, you can select the inflation value that represents a balance between clustering and partitioning. Additionally, consider the root clade of the inferred species tree;
-- **Group species by treatment or phenotype:**Define the phenotypes for subsequent statistical detection of orthogroups. The phenotypes are listed in the input information table; 
+- **Select the inflation value (I):** If you performed multiple runs of OrthoFinder, as recommended, you can select the inflation value that represents a balance between clustering and partitioning. Additionally, consider the root clade of the inferred species tree;
+- **Group species by treatment or phenotype:** Define the phenotypes for subsequent statistical detection of orthogroups. The phenotypes are listed in the input information table; 
 - **Statistical detection of orthogroups associated with a phenotype or treatment:** A statistical test is performed to evaluate the association of the presence or absence of each orthogroup with the treatments or phenotypes under study;
 - **Annotation mapping, visualization, and export:** `GeneDiscoveR` allows functional annotation mapping and provides versatile visualizations, including a Shiny web app for visualization and analysis of the results. Additionally, results can be easily exported;
 
@@ -79,3 +79,15 @@ GeneDiscoveRobject <- GeneDiscoveR(
 You can follow this example on [TPS-map](https://github.com/AtilioRausch/GeneDiscoveR/blob/master/examples/TPSmap.R), which shows the detection of orthogroups associated with different types of oil bodies in liverworts.
 On the other hand, you can run the pipeline for plants with less divergence, such as Brassicaceae, on [Brassicaceae](https://github.com/AtilioRausch/GeneDiscoveR/blob/master/examples/Brassicaceae.R). 
 Finally, if you have data from Phytozome-inParanoiDB, you can follow the example on [Phytozome-inParanoiDB](https://github.com/AtilioRausch/GeneDiscoveR/blob/master/examples/inparanoidb_phytozome.R).
+
+## Citation
+
+Below is the citation output from using `citation('GeneDiscoveR')` in R. Please
+run this yourself to check for any updates on how to cite __GeneDiscoveR__.
+
+```{r 'citation', eval = requireNamespace('GeneDiscoveR')}
+print(citation("GeneDiscoveR"), bibtex = TRUE)
+```
+
+Please note that `GeneDiscoveR` was only made possible thanks to many other R and bioinformatics software authors.
+`GeneDiscoveR` is waiting for publication, and we will provide the DOI as soon as possible.

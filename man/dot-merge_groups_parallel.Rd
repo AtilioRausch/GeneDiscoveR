@@ -17,3 +17,4 @@ The modified and merged dataframe.
 \description{
 This function merges groups in parallel using the provided dataframe.
 }
+\keyword{internal}

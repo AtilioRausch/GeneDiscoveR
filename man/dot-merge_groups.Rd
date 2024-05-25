@@ -32,3 +32,4 @@ resultados <- list(c("1\t2\t3", "4\t5\t6"), c("7\t8\t9"))
 .merge_groups(df, resultados)
 }
 }
+\keyword{internal}

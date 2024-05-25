@@ -3,13 +3,14 @@
 #' This function creates and launches the GeneDiscoveR web application. The web app provides a user interface for analyzing gene data using the GeneDiscoveR package.
 #'
 #' @return NULL
-#' @export
+#' @keywords internal
 #'
 #' @examples
 #' \dontrun{
 #' .launch_genediscover_web_app()
 #' }
 #' @import shiny shinydashboard plotly DT
+#' @export
 .launch_genediscover_web_app <- function() {
   ui <- dashboardPage(
     skin = "black",

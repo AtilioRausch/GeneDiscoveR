@@ -25,6 +25,7 @@
 #'
 #' @import dplyr tidyr readr
 #' @import doParallel
+#' @import parallel
 #' @export
 calculate_overall_statistics <- function(GeneDiscoveRobject = NULL, cores = 1) {
     if (is.null(GeneDiscoveRobject) || is.null(GeneDiscoveRobject$overallsDir)) {
@@ -98,6 +99,7 @@ calculate_overall_statistics <- function(GeneDiscoveRobject = NULL, cores = 1) {
 #'
 #' @import dplyr tidyr readr
 #' @import doParallel
+#' @import parallel
 #'
 #' @examples
 #' # Create a GeneDiscoveR object

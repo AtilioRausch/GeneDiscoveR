@@ -20,3 +20,4 @@ The function also sets the theme using \code{theme_set()} function from ggplot2 
 \examples{
 .set_ggplot2_theme()
 }
+\keyword{internal}

@@ -8,8 +8,9 @@
 #' table <- data.frame(x = c(1, 2, 3), y = c("a", "b", "c"))
 #' .table_as_character(table)
 #' # Output: [1] "1" "2" "3" "a" "b" "c"
-#'
+#' @keywords internal
 #' @import dplyr
+#' @export
 .table_as_character <- function(table = NULL) {
     if (is.null(table)) {
         stop("Error: 'table' cannot be NULL.")
@@ -127,11 +128,12 @@ GeneDiscoveR <- function(overallsDir = NULL, N0sDir = NULL, dataFile = NULL, ann
 #' @param columns A character vector specifying the columns to be used.
 #'
 #' @return A GeneDiscoveRIdentification object with the specified parameters.
-#'
+#' @keywords internal
 #' @examples
 #' \dontrun{
 #' GeneDiscoveRIdentification(name = "MyIdentification", statistic = "Fisher", formula = as.formula("A ~ B"), Phenotypes = c("A", "B"), columns = c("spIDs", "Phenotype1"))
 #' }
+#' @export
 .GeneDiscoveRIdentification <- function(name = NULL, statistic = NULL, formula = NULL, Phenotypes = NULL, columns = NULL) {
     if (is.null(name) || is.null(statistic) || is.null(formula) || is.null(Phenotypes) || is.null(columns)) {
         stop("Error: All parameters must be provided.")
@@ -158,12 +160,13 @@ GeneDiscoveR <- function(overallsDir = NULL, N0sDir = NULL, dataFile = NULL, ann
 #' @param sign The sign of the odds ratio for filtering genes (>, >=, <, <=).
 #'
 #' @return A GeneDiscoveRFilteredGenes object containing the filtered genes.
-#'
+#' @keywords internal
 #' @examples
 #' # Create a GeneDiscoveRFilteredGenes object
 #' \dontrun{
 #' filtered_genes <- .GeneDiscoveRFilteredGenes(table = my_table, name = "Filtered Genes", pvalue = 0.05, oddsRatio = 2, sign = ">")
 #' }
+#' @export
 .GeneDiscoveRFilteredGenes <- function(table = NULL, name = NULL, pvalue = NULL, oddsRatio = NULL, sign = NULL) {
     if (is.null(table) || is.null(name) || is.null(pvalue) || is.null(oddsRatio) || is.null(sign)) {
         stop("Error: All parameters must be provided.")
@@ -365,7 +368,7 @@ clean_phenotypes <- function(GeneDiscoveRobject = NULL) {
 #' @param InflationValue The inflation value for which the index needs to be calculated.
 #'
 #' @return The index of the specified inflation value in the GeneDiscoveR object.
-#'
+#' @keywords internal
 #' @examples
 #' # Create a GeneDiscoveR object
 #' N0sDir <- system.file("extdata", "N0-1dot3-6", package = "GeneDiscoveR")
@@ -384,6 +387,7 @@ clean_phenotypes <- function(GeneDiscoveRobject = NULL) {
 #' index <- .index_N0_inflation(GeneDiscoveRobject, 1.8)
 #' index
 #' # Output: 6
+#' @export
 .index_N0_inflation <- function(GeneDiscoveRobject = NULL, InflationValue = 1.8) {
     if (is.null(GeneDiscoveRobject)) {
         stop("Error: 'GeneDiscoveRobject' cannot be NULL.")
@@ -405,13 +409,14 @@ clean_phenotypes <- function(GeneDiscoveRobject = NULL) {
 #' @param nameColumn2 The name of the column to store the sum for the response variable.
 #'
 #' @return The modified data frame with additional columns storing the sums per phenotype.
-#'
+#' @keywords internal
 #' @examples
 #' \dontrun{
 #' df <- data.frame(predictor = c(1, 2, NA, 4), response = c(NA, 2, 3, 4))
 #' .sum_per_phenotype(df, "predictor", "response", "sum_predictor", "sum_response")
 #' }
 #' @import dplyr
+#' @export
 .sum_per_phenotype <- function(df, predictor, response, nameColumn1, nameColumn2) {
     df <- df %>%
         rowwise() %>%
@@ -434,7 +439,7 @@ clean_phenotypes <- function(GeneDiscoveRobject = NULL) {
 #' @param nameColumn3 The name of the column to be added to the data frame to store the Fisher's exact test result
 #'
 #' @return The input data frame with an additional column containing the Fisher's exact test result for each row
-#'
+#' @keywords internal
 #' @examples
 #' \dontrun{
 #' df <- data.frame(predictor = c(1, 0, 1), response = c(1, 1, 0))
@@ -442,6 +447,7 @@ clean_phenotypes <- function(GeneDiscoveRobject = NULL) {
 #' print(df)
 #' }
 #' @import dplyr
+#' @export
 .fisher_per_row <- function(df, predictor, response, nameColumn1, nameColumn2, nameColumn3) {
     df <- df %>%
         rowwise() %>%
@@ -536,6 +542,7 @@ get_names_identification <- function(GeneDiscoveRobject = NULL) {
 #' # Get complete table
 #' table <- get_complete_table(GeneDiscoveRobject)
 #' # Output: A data frame with the complete table from the GeneDiscoveR object.
+#' @export
 get_complete_table <- function(GeneDiscoveRobject = NULL) {
     if (is.null(GeneDiscoveRobject)) {
         stop("Error: 'GeneDiscoveRobject' cannot be NULL.")

@@ -28,6 +28,5 @@ df <- data.frame(OrtoA = c("A", "B", "C"), OrtoB.1 = c("A", "B", "D"), OrtoB.2 =
 #
 # [[3]]
 # integer(0)
-
 }
 \keyword{internal}

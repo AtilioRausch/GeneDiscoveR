@@ -17,6 +17,8 @@ This function takes a vector as input and returns a new vector containing only t
 }
 \examples{
 x <- c(1, 2, 3, 4, 5, 6)
-get_even_values(x)
+.get_even_values(x)
+
 # Output: 2 4 6
 }
+\keyword{internal}

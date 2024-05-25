@@ -36,3 +36,4 @@ based on specified criteria such as table, name, p-value, odds ratio, and sign.
 filtered_genes <- .GeneDiscoveRFilteredGenes(table = my_table, name = "Filtered Genes", pvalue = 0.05, oddsRatio = 2, sign = ">")
 }
 }
+\keyword{internal}

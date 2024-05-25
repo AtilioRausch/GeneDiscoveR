@@ -38,3 +38,4 @@ result <- .split_annotation_per_gene(tableOG_HOG_Anno)
 print(result)
 }
 }
+\keyword{internal}

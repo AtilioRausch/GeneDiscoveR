@@ -4,10 +4,16 @@
     <loc>/404.html</loc>
   </url>
   <url>
+    <loc>/LICENSE.html</loc>
+  </url>
+  <url>
     <loc>/authors.html</loc>
   </url>
   <url>
     <loc>/index.html</loc>
+  </url>
+  <url>
+    <loc>/reference/GeneDiscoveR.html</loc>
   </url>
   <url>
     <loc>/reference/calculate_median_statistics.html</loc>
@@ -16,7 +22,88 @@
     <loc>/reference/calculate_overall_statistics.html</loc>
   </url>
   <url>
+    <loc>/reference/clean_phenotypes.html</loc>
+  </url>
+  <url>
+    <loc>/reference/dot-GeneDiscoveRFilteredGenes.html</loc>
+  </url>
+  <url>
+    <loc>/reference/dot-GeneDiscoveRIdentification.html</loc>
+  </url>
+  <url>
+    <loc>/reference/dot-check_OrtoA_in_OrtoB.html</loc>
+  </url>
+  <url>
+    <loc>/reference/dot-filter_oneGene_per_OG_HOG.html</loc>
+  </url>
+  <url>
+    <loc>/reference/dot-fisher_per_row.html</loc>
+  </url>
+  <url>
+    <loc>/reference/dot-get_even_values.html</loc>
+  </url>
+  <url>
+    <loc>/reference/dot-get_identification.html</loc>
+  </url>
+  <url>
+    <loc>/reference/dot-index_N0_inflation.html</loc>
+  </url>
+  <url>
+    <loc>/reference/dot-launch_genediscover_web_app.html</loc>
+  </url>
+  <url>
+    <loc>/reference/dot-map_gene_annotation.html</loc>
+  </url>
+  <url>
+    <loc>/reference/dot-merge_groups.html</loc>
+  </url>
+  <url>
+    <loc>/reference/dot-merge_groups_parallel.html</loc>
+  </url>
+  <url>
+    <loc>/reference/dot-merge_inParanoid_files.html</loc>
+  </url>
+  <url>
+    <loc>/reference/dot-server_genediscover.html</loc>
+  </url>
+  <url>
+    <loc>/reference/dot-set_ggplot2_theme.html</loc>
+  </url>
+  <url>
+    <loc>/reference/dot-split_annotation_per_gene.html</loc>
+  </url>
+  <url>
+    <loc>/reference/dot-sum_per_phenotype.html</loc>
+  </url>
+  <url>
+    <loc>/reference/dot-table_as_character.html</loc>
+  </url>
+  <url>
+    <loc>/reference/dot-update_dfMerge.html</loc>
+  </url>
+  <url>
+    <loc>/reference/gene_identification_by_phenotype.html</loc>
+  </url>
+  <url>
+    <loc>/reference/get_complete_table.html</loc>
+  </url>
+  <url>
+    <loc>/reference/get_filtered_genes_table.html</loc>
+  </url>
+  <url>
+    <loc>/reference/get_medians_statistics.html</loc>
+  </url>
+  <url>
+    <loc>/reference/get_names_identification.html</loc>
+  </url>
+  <url>
+    <loc>/reference/get_overall_statistics.html</loc>
+  </url>
+  <url>
     <loc>/reference/index.html</loc>
+  </url>
+  <url>
+    <loc>/reference/map_annotation.html</loc>
   </url>
   <url>
     <loc>/reference/plot_OGs_HOGs_per_inflation.html</loc>
@@ -25,6 +112,24 @@
     <loc>/reference/plot_allSpeciesOGs_sOGs_per_inflation.html</loc>
   </url>
   <url>
-    <loc>/reference/set_ggplot2_theme.html</loc>
+    <loc>/reference/plot_genediscover_volcano.html</loc>
+  </url>
+  <url>
+    <loc>/reference/run_genediscover_web_app.html</loc>
+  </url>
+  <url>
+    <loc>/reference/select_filtered_gene_index.html</loc>
+  </url>
+  <url>
+    <loc>/reference/select_genes_by_phenotype.html</loc>
+  </url>
+  <url>
+    <loc>/reference/select_species_by_phenotype.html</loc>
+  </url>
+  <url>
+    <loc>/reference/set_annotation_file.html</loc>
+  </url>
+  <url>
+    <loc>/reference/set_run_active.html</loc>
   </url>
 </urlset>

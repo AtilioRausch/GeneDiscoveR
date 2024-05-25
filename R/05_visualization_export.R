@@ -48,7 +48,7 @@ run_genediscover_web_app <- function() {
 #' @param name The name of the identification to retrieve.
 #'
 #' @return The identification information matching the specified name.
-#' @export
+#' @keywords internal
 #'
 #' @examples
 #' # Create a GeneDiscoveR object
@@ -73,6 +73,7 @@ run_genediscover_web_app <- function() {
 #'
 #' # Get identification by name
 #' .get_identification(GeneDiscoveRobject, "PerOBtype")
+#' @export
 .get_identification <- function(GeneDiscoveRobject = NULL, name = NULL) {
     if (is.null(GeneDiscoveRobject) || is.null(name)) {
         stop("Error: 'GeneDiscoveRobject' and 'name' cannot be NULL.")
@@ -180,6 +181,7 @@ get_filtered_genes_table <- function(GeneDiscoveRobject = NULL, name = NULL, pva
 #' plot <- plot_genediscover_volcano(GeneDiscoveRobject, name = "PerOBtype")
 #' # Output: A ggplot object representing the volcano plot.
 #' @import ggplot2 dplyr ggsci
+#' @export
 plot_genediscover_volcano <- function(GeneDiscoveRobject = NULL, name = NULL) {
     GeneDiscoveRidentification <- .get_identification(GeneDiscoveRobject = GeneDiscoveRobject, name = name)
     if (!inherits(GeneDiscoveRidentification, "GeneDiscoveRIdentification")) {
@@ -297,9 +299,10 @@ get_medians_statistics <- function(GeneDiscoveRobject = NULL) {
 #' @import ggplot2
 #'
 #' @return This function does not return any value.
-#'
+#' @keywords internal
 #' @examples
 #' .set_ggplot2_theme()
+#' @export
 .set_ggplot2_theme <- function() {
     theme <- theme(
         legend.background = element_blank(),

@@ -19,5 +19,5 @@ This function takes a table as input and converts it to a character vector.
 table <- data.frame(x = c(1, 2, 3), y = c("a", "b", "c"))
 .table_as_character(table)
 # Output: [1] "1" "2" "3" "a" "b" "c"
-
 }
+\keyword{internal}

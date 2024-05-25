@@ -44,7 +44,7 @@
 #' @export
 #' @import dplyr stringr
 #' @import doParallel
-#'
+#' @import parallel
 gene_identification_by_phenotype <- function(formula, GeneDiscoveRobject = NULL, statistic = "Fisher", name = "PerType", cores = 1) {
     if (!is.null(GeneDiscoveRobject$Identification)) {
         if (any(GeneDiscoveRobject$Identification$name == name & GeneDiscoveRobject$Identification$statistic == statistic)) {

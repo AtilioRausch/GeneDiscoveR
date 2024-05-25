@@ -32,3 +32,4 @@ tableOG_HOG <- data.frame(
 filtered_table <- .filter_oneGene_per_OG_HOG(tableOG_HOG)
 }
 }
+\keyword{internal}

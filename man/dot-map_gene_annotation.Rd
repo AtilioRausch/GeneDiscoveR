@@ -33,3 +33,4 @@ mapped_annotations <- .map_gene_annotation(GeneDiscoveRobject, indexFilteredGene
 print(mapped_annotations)
 }
 }
+\keyword{internal}

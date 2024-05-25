@@ -32,3 +32,4 @@ df <- .fisher_per_row(df, df$predictor, df$response, "nameColumn1", "nameColumn2
 print(df)
 }
 }
+\keyword{internal}

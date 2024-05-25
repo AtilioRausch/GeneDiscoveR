@@ -42,3 +42,4 @@ GeneDiscoveRobject <- gene_identification_by_phenotype(GeneDiscoveRobject = Gene
 # Get identification by name
 .get_identification(GeneDiscoveRobject, "PerOBtype")
 }
+\keyword{internal}

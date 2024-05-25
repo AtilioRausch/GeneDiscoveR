@@ -33,12 +33,11 @@ indicated in the pipeline:
     [Phytozome-inParanoiDB](https://genome.jgi.doe.gov/portal/pages/dynamicOrganismDownload.jsf?organism=Phytozome)
     and a table with species IDs and treatments or phenotypes, you can
     start the analyses with `GeneDiscoveR`;
-  - **Network Select the inflation value (I):** If you performed
-    multiple runs of OrthoFinder, as recommended, you can select the
-    inflation value that represents a balance between clustering and
-    partitioning. Additionally, consider the root clade of the inferred
-    species tree;
-  - **Group species by treatment or phenotype:**Define the phenotypes
+  - **Select the inflation value (I):** If you performed multiple runs
+    of OrthoFinder, as recommended, you can select the inflation value
+    that represents a balance between clustering and partitioning.
+    Additionally, consider the root clade of the inferred species tree;
+  - **Group species by treatment or phenotype:** Define the phenotypes
     for subsequent statistical detection of orthogroups. The phenotypes
     are listed in the input information table;
   - **Statistical detection of orthogroups associated with a phenotype
@@ -100,3 +99,32 @@ for plants with less divergence, such as Brassicaceae, on
 Finally, if you have data from Phytozome-inParanoiDB, you can follow the
 example on
 [Phytozome-inParanoiDB](https://github.com/AtilioRausch/GeneDiscoveR/blob/master/examples/inparanoidb_phytozome.R).
+
+## Citation
+
+Below is the citation output from using `citation('GeneDiscoveR')` in R.
+Please run this yourself to check for any updates on how to cite
+**GeneDiscoveR**.
+
+``` r
+print(citation("GeneDiscoveR"), bibtex = TRUE)
+#> To cite package 'GeneDiscoveR' in publications use:
+#> 
+#>   Rausch A (2024). _GeneDiscoveR: an R package for the statistical
+#>   detection of orthogroups associated to plant traits._. R package
+#>   version 1.0.0, <https://github.com/AtilioRausch/GeneDiscoveR>.
+#> 
+#> A BibTeX entry for LaTeX users is
+#> 
+#>   @Manual{,
+#>     title = {GeneDiscoveR: an R package for the statistical detection of orthogroups associated to plant traits.},
+#>     author = {Atilio O. Rausch},
+#>     year = {2024},
+#>     note = {R package version 1.0.0},
+#>     url = {https://github.com/AtilioRausch/GeneDiscoveR},
+#>   }
+```
+
+Please note that `GeneDiscoveR` was only made possible thanks to many
+other R and bioinformatics software authors. `GeneDiscoveR` is waiting
+for publication, and we will provide the DOI as soon as possible.

@@ -36,3 +36,4 @@ index <- .index_N0_inflation(GeneDiscoveRobject, 1.8)
 index
 # Output: 6
 }
+\keyword{internal}

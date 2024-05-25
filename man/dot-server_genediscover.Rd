@@ -26,3 +26,4 @@ and the filtering of data based on selected genes.
 .server_genediscover(input, output, session)
 }
 }
+\keyword{internal}

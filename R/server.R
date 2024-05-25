@@ -9,11 +9,12 @@
 #' @param session The session object for the Shiny application.
 #'
 #' @return None
-#'
+#' @keywords internal
 #' @examples
 #' \dontrun{
 #' .server_genediscover(input, output, session)
 #' }
+#' @export
 .server_genediscover <- function(input, output, session) {
     output$menu <- renderMenu({
         sidebarMenu(

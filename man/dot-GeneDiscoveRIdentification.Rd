@@ -34,3 +34,4 @@ This function creates a GeneDiscoveRIdentification object with the specified par
 GeneDiscoveRIdentification(name = "MyIdentification", statistic = "Fisher", formula = as.formula("A ~ B"), Phenotypes = c("A", "B"), columns = c("spIDs", "Phenotype1"))
 }
 }
+\keyword{internal}

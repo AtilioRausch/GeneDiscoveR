@@ -128,7 +128,7 @@ map_annotation <- function(GeneDiscoveRobject = NULL, indexFilteredGenes = NULL,
 #' @param specieWithAnnotation The species with annotation to use for mapping.
 #'
 #' @return A tibble containing the mapped gene annotations.
-#'
+#' @keywords internal
 #' @examples
 #' \dontrun{
 #' # Map gene annotations for filtered genes at index 1
@@ -140,6 +140,7 @@ map_annotation <- function(GeneDiscoveRobject = NULL, indexFilteredGenes = NULL,
 #' @importFrom readr read_tsv
 #' @importFrom stringr str_split
 #' @importFrom dplyr bind_rows rename
+#' @export
 .map_gene_annotation <- function(GeneDiscoveRobject = NULL, indexFilteredGenes = NULL, specieWithAnnotation = "MpTAKv6-Marchantia_polymorpha_rudelaris") {
     if (is.null(GeneDiscoveRobject$AnnotationFile) || !file.exists(GeneDiscoveRobject$AnnotationFile)) {
         stop("Error: 'GeneDiscoveRobject$AnnotationFile' is NULL or does not exist.")
@@ -212,7 +213,7 @@ map_annotation <- function(GeneDiscoveRobject = NULL, indexFilteredGenes = NULL,
 #'
 #' @return A modified version of the input table with the annotations split into
 #' separate columns for each gene.
-#'
+#' @keywords internal
 #' @examples
 #' \dontrun{
 #' # Create a sample table of gene annotations
@@ -230,6 +231,7 @@ map_annotation <- function(GeneDiscoveRobject = NULL, indexFilteredGenes = NULL,
 #' print(result)
 #' }
 #' @import dplyr
+#' @export
 .split_annotation_per_gene <- function(tableOG_HOG_Anno = NULL, sep = ";") {
     result <- tableOG_HOG_Anno %>%
         mutate(X2 = strsplit(as.character(X2), sep)) %>%
@@ -249,7 +251,7 @@ map_annotation <- function(GeneDiscoveRobject = NULL, indexFilteredGenes = NULL,
 #' @param tableOG_HOG A data frame containing the OG HOG annotations.
 #'
 #' @return A data frame with one gene per OG HOG combination, based on the minimum number of annotations.
-#'
+#' @keywords internal
 #' @examples
 #' \dontrun{
 #' # Create a sample table of OG HOG annotations
@@ -266,6 +268,7 @@ map_annotation <- function(GeneDiscoveRobject = NULL, indexFilteredGenes = NULL,
 #' filtered_table <- .filter_oneGene_per_OG_HOG(tableOG_HOG)
 #' }
 #' @import dplyr
+#' @export
 .filter_oneGene_per_OG_HOG <- function(tableOG_HOG = NULL) {
     result <- tableOG_HOG %>%
         mutate(Nannotations = rowSums(!is.na(.[-(1:3)]))) %>%

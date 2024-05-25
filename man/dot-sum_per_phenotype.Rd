@@ -29,3 +29,4 @@ df <- data.frame(predictor = c(1, 2, NA, 4), response = c(NA, 2, 3, 4))
 .sum_per_phenotype(df, "predictor", "response", "sum_predictor", "sum_response")
 }
 }
+\keyword{internal}
