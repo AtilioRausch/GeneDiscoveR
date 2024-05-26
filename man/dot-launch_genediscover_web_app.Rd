@@ -13,5 +13,6 @@ This function creates and launches the GeneDiscoveR web application. The web app
 \dontrun{
 .launch_genediscover_web_app()
 }
+
 }
 \keyword{internal}

@@ -179,7 +179,6 @@
 #' @return The modified and merged dataframe.
 #' @keywords internal
 #' @import dplyr
-#' @import purrr
 #' @import foreach
 #' @import doParallel
 #' @import parallel

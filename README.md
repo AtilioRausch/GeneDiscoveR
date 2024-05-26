@@ -108,18 +108,19 @@ Please run this yourself to check for any updates on how to cite
 
 ``` r
 print(citation("GeneDiscoveR"), bibtex = TRUE)
-#> To cite package 'GeneDiscoveR' in publications use:
+#> To cite package GeneDiscoveR in publications use:
 #> 
-#>   Rausch A (2024). _GeneDiscoveR: an R package for the statistical
-#>   detection of orthogroups associated to plant traits._. R package
-#>   version 1.0.0, <https://github.com/AtilioRausch/GeneDiscoveR>.
+#>   Rausch, Atilio O, et. al (2024). GeneDiscoveR: an R package for the
+#>   statistical detection of orthogroups associated to plant traits. R
+#>   package version 1.0.0. URL
+#>   https://github.com/tu_nombre_de_usuario/miPaquete
 #> 
 #> A BibTeX entry for LaTeX users is
 #> 
 #>   @Manual{,
 #>     title = {GeneDiscoveR: an R package for the statistical detection of orthogroups associated to plant traits.},
 #>     author = {Atilio O. Rausch},
-#>     year = {2024},
+#>     year = {224},
 #>     note = {R package version 1.0.0},
 #>     url = {https://github.com/AtilioRausch/GeneDiscoveR},
 #>   }

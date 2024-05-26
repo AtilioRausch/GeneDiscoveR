@@ -308,7 +308,7 @@ set_run_active <- function(GeneDiscoveRobject = NULL, InflationValue = 1.8, core
         dfMerge <- dfMerge %>% rename(OrtoA = "dfMerge$OrtoA[i]")
         cat("-----------Step 5 of 5 - Merge inParanoid files-----------\n")
         dfMerge <- .update_dfMerge(dfMerge, GeneDiscoveRobject$principalSpeciePrefix, GeneDiscoveRobject$genomesData, colnames(GeneDiscoveRobject$genomesData)[1])
-        cat("The process has been completed successfully\n")
+        cat("The process has been completed successfully\n\n")
         GeneDiscoveRobject$RunActive$N0Active <- dfMerge
         GeneDiscoveRobject$RunActive$N0Active <- GeneDiscoveRobject$RunActive$N0Active %>% mutate(OG = 1:nrow(GeneDiscoveRobject$RunActive$N0Active), HOG = 1:nrow(GeneDiscoveRobject$RunActive$N0Active))
         GeneDiscoveRobject$RunActive$N0Active
@@ -418,12 +418,30 @@ clean_phenotypes <- function(GeneDiscoveRobject = NULL) {
 #' @import dplyr
 #' @export
 .sum_per_phenotype <- function(df, predictor, response, nameColumn1, nameColumn2) {
-    df <- df %>%
-        rowwise() %>%
-        mutate(
-            nameColumn1 = sum(!is.na(c_across(all_of(predictor))) & c_across(all_of(predictor)) != ""),
-            nameColumn2 = sum(!is.na(c_across(all_of(response))) & c_across(all_of(response)) != "")
-        )
+    if (!(!!nameColumn1 %in% colnames(df)) && !(!!nameColumn2 %in% colnames(df))) {
+        df <- df %>%
+            rowwise() %>%
+            mutate(
+                nameColumn1 = sum(!is.na(c_across(all_of(predictor))) & c_across(all_of(predictor)) != ""),
+                nameColumn2 = sum(!is.na(c_across(all_of(response))) & c_across(all_of(response)) != "")
+            )
+    } else if (!!nameColumn1 %in% colnames(df)) {
+        df <- df %>%
+            rowwise() %>%
+            mutate(
+                nameColumn2 = sum(!is.na(c_across(all_of(response))) & c_across(all_of(response)) != "")
+            ) %>%
+            rename(nameColumn1 := !!nameColumn1)
+    } else if (!!nameColumn2 %in% colnames(df)) {
+        df <- df %>%
+            rowwise() %>%
+            mutate(
+                nameColumn1 = sum(!is.na(c_across(all_of(predictor))) & c_across(all_of(predictor)) != "")
+            ) %>%
+            rename(nameColumn2 := !!nameColumn2)
+    } else {
+        df <- df %>% rename(nameColumn1 := !!nameColumn1, nameColumn2 := !!nameColumn2)
+    }
     return(df)
 }
 

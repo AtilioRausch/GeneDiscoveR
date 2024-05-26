@@ -12,7 +12,7 @@
 
 # Install and import GeneDiscoveR package
 invisible(lapply(c("usethis", "devtools"), library, character.only = TRUE))
-devtools::install_github("AtilioRausch/GeneDiscoveR")
+devtools::install_github("AtilioRausch/GeneDiscoveR", force = T)
 library(GeneDiscoveR)
 
 # Directory where the data is located

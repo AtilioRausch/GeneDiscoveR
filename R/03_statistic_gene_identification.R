@@ -121,13 +121,19 @@ gene_identification_by_phenotype <- function(formula, GeneDiscoveRobject = NULL,
                 !!paste0("pvalueFisher", name) := (!!sym(nameColumn3))[["p.value"]],
                 !!paste0("oddsRatioFisher", name) := (!!sym(nameColumn3))[["estimate"]]
             )
-        if (!any("nameColumn1" %in% colnames(GeneDiscoveRobject$RunActive$N0Active))) {
+        if (!(!!nameColumn1 %in% colnames(GeneDiscoveRobject$RunActive$N0Active))) {
             GeneDiscoveRobject$RunActive$N0Active <- GeneDiscoveRobject$RunActive$N0Active %>%
-                rename(!!nameColumn1 := nameColumn1)
+                rename(!!nameColumn1 := "nameColumn1")
+        } else {
+            GeneDiscoveRobject$RunActive$N0Active <- GeneDiscoveRobject$RunActive$N0Active %>%
+                select(-nameColumn1)
         }
-        if (!any("nameColumn2" %in% colnames(GeneDiscoveRobject$RunActive$N0Active))) {
+        if (!(!!nameColumn2 %in% colnames(GeneDiscoveRobject$RunActive$N0Active))) {
             GeneDiscoveRobject$RunActive$N0Active <- GeneDiscoveRobject$RunActive$N0Active %>%
-                rename(!!nameColumn2 := nameColumn2)
+                rename(!!nameColumn2 := "nameColumn2")
+        } else {
+            GeneDiscoveRobject$RunActive$N0Active <- GeneDiscoveRobject$RunActive$N0Active %>%
+                select(-nameColumn2)
         }
     }
     if (is.null(GeneDiscoveRobject$Identification)) {
@@ -145,7 +151,6 @@ gene_identification_by_phenotype <- function(formula, GeneDiscoveRobject = NULL,
     }
     return(GeneDiscoveRobject)
 }
-
 #' Select genes by phenotype
 #'
 #' This function filter the previuos identification with \code{\link{gene_identification_by_phenotype}}.

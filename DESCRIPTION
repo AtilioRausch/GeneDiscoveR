@@ -23,11 +23,12 @@ Imports:
     tidyr,
     doParallel,
     stringr,
-    parallel
-Suggests:
+    parallel,
+    purrr,
     shiny,
     shinydashboard,
     DT,
-    plotly
+    plotly,
+    foreach
 Depends:
     R (>= 4.2)

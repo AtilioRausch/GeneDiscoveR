@@ -14,6 +14,9 @@
 #' \dontrun{
 #' .server_genediscover(input, output, session)
 #' }
+#' @import shinydashboard
+#' @importFrom DT renderDT datatable
+#' @importFrom plotly renderPlotly ggplotly event_data
 #' @export
 .server_genediscover <- function(input, output, session) {
     output$menu <- renderMenu({
@@ -22,7 +25,7 @@
                 tabName = "plot", icon = icon("bar-chart"), selected = TRUE,
                 startExpanded = TRUE
             ),
-            menuItem("Table of HOGs", tabName = "tableHOG", icon = icon("th"))
+            menuItem("Table of OGs", tabName = "tableOG", icon = icon("th"))
         )
     })
     isolate({
@@ -33,7 +36,7 @@
     observeEvent(event_data("plotly_selected", source = "volcano"), {
         event <- event_data("plotly_selected", source = "volcano")
         if (!is.null(event) && length(event$pointNumber) > 0) {
-            showNotification("Indication: The HOGs have been selected, you can view them in the ‘Table of selected HOGs’ tab.", type = "default", duration = 10)
+            showNotification("Indication: The HOGs have been selected, you can view them in the ‘Table of orthogroups’ tab.", type = "default", duration = 10)
         }
     })
 
@@ -119,8 +122,6 @@
                         xlab("-log(p-value)") +
                         scale_color_jama()
                     p <- ggplotly(g1, source = "volcano", dynamicTicks = TRUE)
-                    event_register(p, "plotly_selected")
-                    p
                 })
                 showNotification("Indication: you can select the HOGs in the Volcano plot!", type = "message", duration = 10)
             } else {
@@ -165,8 +166,6 @@
                     theme(legend.position.inside = c(1, 0.9), legend.justification = c("right", "top"), legend.box.just = "right")
 
                 p <- ggplotly(g1, source = "volcano", dynamicTicks = TRUE)
-                event_register(p, "plotly_selected")
-                p
             })
         }
     })

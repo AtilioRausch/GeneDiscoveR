@@ -1,0 +1,11 @@
+citHeader("To cite package GeneDiscoveR in publications use:")
+
+citEntry(entry = "Manual",
+         title = "GeneDiscoveR: an R package for the statistical detection of orthogroups associated to plant traits.",
+         author = as.person("Atilio O. Rausch"),
+         year = "224",
+         note = "R package version 1.0.0",
+         url = "https://github.com/AtilioRausch/GeneDiscoveR",
+         textVersion = 
+           paste("Rausch, Atilio O, et. al (2024). GeneDiscoveR: an R package for the statistical detection of orthogroups associated to plant traits. R package version 1.0.0. URL https://github.com/tu_nombre_de_usuario/miPaquete")
+)

@@ -9,7 +9,12 @@
 #' \dontrun{
 #' .launch_genediscover_web_app()
 #' }
-#' @import shiny shinydashboard plotly DT
+#'
+#' @import shinydashboard
+#' @importFrom shiny fluidRow column shinyApp
+#' @import DT
+#' @importFrom plotly plotlyOutput
+#'
 #' @export
 .launch_genediscover_web_app <- function() {
   ui <- dashboardPage(
@@ -42,14 +47,14 @@
                 title = "Instructions", status = "info", solidHeader = TRUE, width = NULL,
                 # Agrega el logo a la derecha
                 tags$div(
-                  tags$img(src = "www/logo.png", height = "auto", width = "30%", style = "float: right; padding-left: 20px;"),
+                  tags$img(src = system.file("man", "figures", "logo.png", package = "GeneDiscoveR"), height = "auto", width = "30%", style = "float: right; padding-left: 20px;"),
                   # Agrega la lista de instrucciones a la izquierda
                   tags$p("Welcome to the GeneDiscoveR work dashboard. To analyze your data, please follow these instructions:"),
                   tags$ul(
                     tags$li("Step 1: Enter the name of the GeneDiscoveR object and the name of the identification made with it in the “Step 1: Inputs” window. Then click Load."),
-                    tags$li("Step 2: The associated Volcano plot will be loaded in “Step 2: Volcano plot”. In the plot, you can select HOGs using the Box select option and view them in the Table of HOGs section."),
+                    tags$li("Step 2: The associated Volcano plot will be loaded in “Step 2: Volcano plot”. In the plot, you can select orthogroups using the Box select option and view them in the Table of OGs section."),
                     tags$li("Step 3: Specify the names of the genes to be sectioned. For multiple selections, separate the IDs with a comma (,). When you click Load genes, the Volcano plot will be updated to allow their identification."),
-                    tags$p("At any time, after selecting with Box select, you can go to the Table of HOGs section to view the data table, filter it, and/or export it.")
+                    tags$p("At any time, after selecting with Box select, you can go to the Table of OGs section to view the data table, filter it, and/or export it.")
                   )
                 ),
                 style = "overflow:auto;"
@@ -76,7 +81,7 @@
 
         # Second tab content
         tabItem(
-          tabName = "tableHOG",
+          tabName = "tableOG",
           DTOutput("table")
         )
       )
