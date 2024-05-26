@@ -162,9 +162,7 @@
                     ylab("log(Odds Ratio)") +
                     xlab("-log(p-value)") +
                     scale_color_jama() +
-                    guides(color = guide_legend(title = "Selected")) +
-                    theme(legend.position.inside = c(1, 0.9), legend.justification = c("right", "top"), legend.box.just = "right")
-
+                    guides(color = guide_legend(title = "Selected"))
                 p <- ggplotly(g1, source = "volcano", dynamicTicks = TRUE)
             })
         }
