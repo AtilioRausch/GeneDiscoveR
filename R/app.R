@@ -11,7 +11,7 @@
 #' }
 #'
 #' @import shinydashboard
-#' @importFrom shiny fluidRow column shinyApp tags HTML
+#' @importFrom shiny fluidRow column shinyApp tags HTML textInput actionButton
 #' @import DT
 #' @importFrom plotly plotlyOutput
 #'
