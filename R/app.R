@@ -11,7 +11,7 @@
 #' }
 #'
 #' @import shinydashboard
-#' @importFrom shiny fluidRow column shinyApp
+#' @importFrom shiny fluidRow column shinyApp tags
 #' @import DT
 #' @importFrom plotly plotlyOutput
 #'
