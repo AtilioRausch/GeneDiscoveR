@@ -47,7 +47,7 @@
                 title = "Instructions", status = "info", solidHeader = TRUE, width = NULL,
                 # Agrega el logo a la derecha
                 tags$div(
-                  tags$img(src = system.file("man", "figures", "logo.png", package = "GeneDiscoveR"), height = "auto", width = "30%", style = "float: right; padding-left: 20px;"),
+                  #tags$img(src = system.file("man", "figures", "logo.png", package = "GeneDiscoveR"), height = "auto", width = "30%", style = "float: right; padding-left: 20px;"),
                   # Agrega la lista de instrucciones a la izquierda
                   tags$p("Welcome to the GeneDiscoveR work dashboard. To analyze your data, please follow these instructions:"),
                   tags$ul(
