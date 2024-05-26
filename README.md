@@ -68,6 +68,8 @@ devtools::install_github("AtilioRausch/GeneDiscoveR")
 library(GeneDiscoveR)
 ```
 
+Installation downloads \~800Mb per example files
+
 ## Examples of use
 
 The following code shows an example of how to use `GeneDiscoveR`:
