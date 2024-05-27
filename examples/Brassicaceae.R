@@ -51,7 +51,7 @@ GeneDiscoveRobject <- gene_identification_by_phenotype(
 GeneDiscoveRobject <- select_genes_by_phenotype(GeneDiscoveRobject,
     pvalue = 0.05,
     oddsRatio = 1,
-    sign = ">=",
+    sign = ">",
     name = "Self-compatible"
 )
 
@@ -59,7 +59,7 @@ GeneDiscoveRobject <- select_genes_by_phenotype(GeneDiscoveRobject,
 # Import Arabidopsis thaliana annotation file from TAIR10
 annotationFile <- system.file("extdata", "Brassicaceae", "TAIR10_functional_descriptions", package = "GeneDiscoveR")
 GeneDiscoveRobject <- set_annotation_file(GeneDiscoveRobject, annotationFile = annotationFile)
-indexFilteredGenes <- select_filtered_gene_index(GeneDiscoveRobject, name = "Self-compatible", pvalue = 0.05, oddsRatio = 1, sign = ">=")
+indexFilteredGenes <- select_filtered_gene_index(GeneDiscoveRobject, name = "Self-compatible", pvalue = 0.05, oddsRatio = 1, sign = ">")
 
 # Map annotation to the filtered genes. indexFilteredGenes is the index of the filtered genes, if NULL, the annotation is mapped to the complete table
 GeneDiscoveRobject <- map_annotation(
@@ -77,13 +77,13 @@ GeneDiscoveRobject <- map_annotation(
 )
 
 # Show the filtered genes table
-View(get_filtered_genes_table(GeneDiscoveRobject, name = "Self-compatible", pvalue = 0.05, oddsRatio = 1, sign = ">="))
+View(get_filtered_genes_table(GeneDiscoveRobject, name = "Self-compatible", pvalue = 0.05, oddsRatio = 1, sign = ">"))
 
 # plot volcano
 plot_genediscover_volcano(GeneDiscoveRobject, name = "Self-compatible")
 
 # Export the filtered genes table with annotation
-write_csv(get_filtered_genes_table(GeneDiscoveRobject, name = "Self-compatible", pvalue = 0.05, oddsRatio = 1, sign = ">="), "/home/atilio/Descargas/Results_Jun02/filtered_genes_table-2.csv")
+write_csv(get_filtered_genes_table(GeneDiscoveRobject, name = "Self-compatible", pvalue = 0.05, oddsRatio = 1, sign = ">"), "/home/atilio/Descargas/Results_Jun02/filtered_genes_table-2.csv")
 
 # Export the complete table with identification
 write_csv(get_complete_table(GeneDiscoveRobject), "/home/path/to/complete_table-2.csv")

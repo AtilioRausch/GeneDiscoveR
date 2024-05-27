@@ -62,7 +62,7 @@
               box(
                 title = "Step 1: Inputs", status = "warning", solidHeader = TRUE, width = NULL,
                 textInput("dataframeName", "Enter the name of a GeneDiscoveR object:", value = "GeneDiscoveRobject"),
-                textInput("name", "Enter the name of an identification:", value = "Self-compatible"),
+                textInput("name", "Enter the name of an identification:", value = "PerType"),
                 actionButton("submit", "Load", class = "btn-primary", icon = icon("play")),
               ),
               box(

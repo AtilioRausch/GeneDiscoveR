@@ -128,7 +128,38 @@ GeneDiscoveRobject <- map_annotation(
 completeTable <- get_complete_table(GeneDiscoveRobject)
 
 # Plot the volcano plot -----------------------------------------------------------
-plot_genediscover_volcano(GeneDiscoveRobject, name = "PerType")
+volcano <- plot_genediscover_volcano(GeneDiscoveRobject, name = "PerType")
+
+# Load the TPS genes -----------------------------------------------------------
+TPSgenes <- read_tsv(system.file("extdata", "TPSgenes.tsv"), col_names = T)
+
+# Add the TPS type to the complete table
+diterpene <- TPSgenes %>% filter(TPStype == "diterpene")
+bacterial <- TPSgenes %>% filter(TPStype == "bacterial")
+fungi <- TPSgenes %>% filter(TPStype == "fungi")
+completeTable <- completeTable %>% mutate(
+  TPStype = ifelse(OG %in% diterpene$OG & `Gene Tree Parent Clade` %in%  diterpene$`Gene Tree Parent Clade`, "Diterpene", 
+            ifelse(OG %in% bacterial$OG & `Gene Tree Parent Clade` %in%  bacterial$`Gene Tree Parent Clade`, "Bacterial", 
+            ifelse(OG %in% fungi$OG & `Gene Tree Parent Clade` %in%  fungi$`Gene Tree Parent Clade`, "Fungi", "NoTPS"))))
+
+# Limit the odds ratio to 5 and -5
+completeTable <- completeTable %>%
+  mutate(
+    logoddRatioFisher = case_when(
+      oddsRatioFisherPerType == 0 ~ -5,
+      oddsRatioFisherPerType == Inf ~ 5,
+      is.finite(oddsRatioFisherPerType) ~ log(oddsRatioFisherPerType)
+    )
+  )
+
+# Plot the volcano plot with the TPS genes -----------------------------------------------------------
+volcano <- volcano + geom_point(data = completeTable %>% filter(TPStype != "NoTPS"), 
+                                aes(x = -log(pvalueFisherPerType), y = logoddRatioFisher,
+                                    color = TPStype),
+                                size = 3) +
+                                ggsci::scale_color_npg() +
+                                ggtitle("Fisher's Exact Test per Type of Oil-body with TPS genes")
+
 
 # Run the GeneDiscoveR web app -----------------------------------------------------------
 run_genediscover_web_app()
