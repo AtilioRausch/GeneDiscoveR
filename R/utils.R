@@ -644,7 +644,7 @@ get_complete_table <- function(GeneDiscoveRobject = NULL) {
 #' )
 #'
 #' # Show the filtered genes table
-#' get_filtered_genes_table(GeneDiscoveRobject, name = "Self-incompatible", pvalue = 0.05, oddsRatio = 1, sign = ">")
+#' FilteredGenes <- get_filtered_genes_table(GeneDiscoveRobject, name = "Self-incompatible", pvalue = 0.05, oddsRatio = 1, sign = ">")
 #'
 #' # OG of the gene AT5G44220.1
 #' GeneID <- c("AT5G44220.1")
@@ -667,7 +667,7 @@ obtain_OG_from_gene <- function(GeneDiscoveRobject, GeneID = NULL, SpeciesID = N
     result <- NULL
     result <- completeTable %>%
         rowwise() %>%
-        filter(str_detect(pattern = GeneID[1], across(OrthoFinderID[1]))) %>%
+        filter(str_detect(pattern = GeneID[1], across(SpeciesID[1]))) %>%
         select(OG, `Gene Tree Parent Clade`)
     if (!dim(result)[1] == 0) {
         result <- result %>% mutate(GeneID = GeneID[1])
@@ -682,7 +682,7 @@ obtain_OG_from_gene <- function(GeneDiscoveRobject, GeneID = NULL, SpeciesID = N
         for (i in 2:length(GeneID)) {
             result <- completeTable %>%
                 rowwise() %>%
-                filter(str_detect(pattern = GeneID[i], across(OrthoFinderID[i]))) %>%
+                filter(str_detect(pattern = GeneID[i], across(SpeciesID[i]))) %>%
                 select(OG, `Gene Tree Parent Clade`)
             if (!dim(result)[1] == 0) {
                 result <- result %>% mutate(GeneID = GeneID[i])

@@ -13,7 +13,7 @@ Crubella	Crubella_474_v1.1.protein_primaryTranscriptOnly	0	0	1
 Cviolacea	Cviolacea_585_v2.1.protein_primaryTranscriptOnly	0	0	0
 Dsophioides	Dsophioides_482_v1.1.protein_primaryTranscriptOnly	0	0	0
 Dstrictus	Dstrictus_582_v2.1.protein_primaryTranscriptOnly	0	0	0
-Esalsugineum	Esalsugineum_173_v1.0.protein_primaryTranscriptOnly	1	0	1.5
+Esalsugineum	Esalsugineum_173_v1.0.protein_primaryTranscriptOnly	1	0	1
 Esyriacum	Esyriacum_483_v1.1.protein_primaryTranscriptOnly	0	0	0
 Evesicaria	Evesicaria_487_v1.1.protein_primaryTranscriptOnly	0	0	0
 Iamara	Iamara_485_v1.1.protein_primaryTranscriptOnly	0	0	0
@@ -24,6 +24,6 @@ Mmaritima	Mmaritima_477_v1.1.protein_primaryTranscriptOnly	0	1	0
 Mperfoliatum	Mperfoliatum_583_v2.1.protein_primaryTranscriptOnly	0	0	0
 Rislandica	Rislandica_473_v1.1.protein_primaryTranscriptOnly	0	0	0
 Salba	Salba_584_v3.1.protein_primaryTranscriptOnly	0	0	0
-Sparvula	Sparvula_574_v2.2.protein_primaryTranscriptOnly	1	0	0
+Sparvula	Sparvula_574_v2.2.protein_primaryTranscriptOnly	1	0	1read.table(dataFile, header = T, sep = "\t")
 Spinnata	Spinnata_486_v1.1.protein_primaryTranscriptOnly	0	0	0
 Tarvense	Tarvense_479_v1.1.protein_primaryTranscriptOnly	0	0	0
