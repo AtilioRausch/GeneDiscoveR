@@ -206,7 +206,112 @@ plot_genediscover_volcano <- function(GeneDiscoveRobject = NULL, name = NULL) {
         annotate("text", x = 8, y = 1, label = "OddRatio >= 1", color = "black") +
         ylab("log(Odds Ratio)") +
         xlab("-log(p-value)")
+
     return(g1)
+}
+
+#' Plot Gene Detector Volcano
+#'
+#' This function plots a volcano plot for gene detection using GeneDiscoveR.
+#'
+#' @param GeneDiscoveRobject The GeneDiscoveR object containing the gene detection results.
+#' @param annotationTable The annotation table used for filtering genes based on categories. With OG, Gene Tree Parent Clade, GeneID and type columns.
+#' @param name The name of the gene detection result to plot.
+#' @param title The title of the volcano plot.
+#' @param type The type of genes to plot (default is "TPStype"). Is the column name in the annotationTable.
+#' @param categories The categories of genes to include in the plot (default is c("Diterpene", "Bacterial", "Fungi")).
+#'
+#' @return A ggplot object representing the volcano plot.
+#'
+#' @examples
+#' # Create a GeneDiscoveR object
+#' N0sDir <- system.file("extdata", "N0-1dot3-6", package = "GeneDiscoveR")
+#' overallsDir <- system.file("extdata", "Comparatives-1dot3-6", package = "GeneDiscoveR")
+#' dataFile <- system.file("extdata", "annotatedCDSs.tsv", package = "GeneDiscoveR")
+#' minInflation <- 1.3
+#' maxInflation <- 6
+#' stepInflation <- 0.1
+#'
+#' GeneDiscoveRobject <- GeneDiscoveR(overallsDir = overallsDir, N0sDir = N0sDir, dataFile = dataFile, minInflation = minInflation, maxInflation = maxInflation, stepInflation = stepInflation)
+#'
+#' # Set active run
+#' GeneDiscoveRobject <- set_run_active(GeneDiscoveRobject, InflationValue = 1.8)
+#'
+#' # Select species by phenotype
+#' GeneDiscoveRobject <- select_species_by_phenotype(GeneDiscoveRobject = GeneDiscoveRobject, columnPhenotype = "Oil-body-type", columnID = "OrthofinderID", type = "one_in_specialized_cell")
+#' GeneDiscoveRobject <- select_species_by_phenotype(GeneDiscoveRobject = GeneDiscoveRobject, columnPhenotype = "Oil-body-type", columnID = "OrthofinderID", type = "many_in_all_cells")
+#'
+#' # Gene identification by phenotype
+#' GeneDiscoveRobject <- gene_identification_by_phenotype(GeneDiscoveRobject = GeneDiscoveRobject, formula = as.formula("many_in_all_cells ~ one_in_specialized_cell"), statistic = "Fisher", name = "PerType", cores = 8)
+#'
+#' # Load the TPS genes
+#' TPSgenes <- read_tsv(system.file("extdata", "TPSgenes.tsv", package = "GeneDiscoveR"), col_names = T)
+#' TPScategories <- c("Diterpene", "Bacterial", "Fungi")
+#' title <- "Fisher's Exact Test per Type of Oil-body with TPS genes"
+#' plot_genediscover_detector_volcano(GeneDiscoveRobject, annotationTable = TPSgenes, title = title, name = "PerType", type = "TPStype", categories = TPScategories)
+#' # Volcano plot with TPS genes
+#'
+#' # Output: A ggplot object representing the volcano plot.
+#' #' @seealso
+#' \code{\link{GeneDiscoveR}}
+#' \code{\link{plot_genediscover_volcano}}
+#' \code{\link{run_genediscover_web_app}}
+#' @import ggplot2 dplyr ggsci
+#' @export
+plot_genediscover_detector_volcano <- function(GeneDiscoveRobject = NULL, annotationTable = NULL, name = NULL, title = "", type = "TPStype", categories = c("Diterpene", "Bacterial", "Fungi")) {
+    
+    if (is.null(GeneDiscoveRobject) || is.null(annotationTable) || is.null(name)) {
+        stop("Error: 'GeneDiscoveRobject', 'annotationTable' and 'name' cannot be NULL.")
+    }
+    if (!(type %in% colnames(annotationTable))) {
+        stop("Error: 'type' column does not exist in annotationTable.")
+    }
+
+    # Add the TPS type to the complete table
+    filteredTables <- list()
+    for (category in categories) {
+        filteredTable <- annotationTable %>% filter(!!sym(type) == category)
+        filteredTables[[category]] <- filteredTable
+        # Rest of the code for each category
+    }
+
+    completeTable <- get_complete_table(GeneDiscoveRobject)
+    GeneDiscoveRidentification <- .get_identification(GeneDiscoveRobject = GeneDiscoveRobject, name = name)
+    volcano <- GeneDiscoveRobject$VolcanoPlot
+    completeTable <- completeTable %>%
+        mutate(
+            !!type := NA
+        )
+
+    for (category in categories) {
+        completeTable[completeTable$OG %in% filteredTables[[category]]$OG & completeTable$`Gene Tree Parent Clade` %in% filteredTables[[category]]$`Gene Tree Parent Clade`, type] <- category
+    }
+
+    completeTable <- completeTable %>% filter(!is.na(!!sym(type)))
+
+    # Limit the odds ratio to 5 and -5
+    completeTable <- completeTable %>%
+        mutate(
+            logoddRatioFisher = case_when(
+                !!sym(GeneDiscoveRidentification$columns[5]) == 0 ~ -5,
+                !!sym(GeneDiscoveRidentification$columns[5]) == Inf ~ 5,
+                is.finite(!!sym(GeneDiscoveRidentification$columns[5])) ~ log(!!sym(GeneDiscoveRidentification$columns[5]))
+            )
+        )
+    # Plot the volcano plot with the TPS genes -----------------------------------------------------------
+    volcano <- plot_genediscover_volcano(GeneDiscoveRobject, name = name) + geom_point(
+        data = completeTable,
+        aes(
+            x = -log(.data[[GeneDiscoveRidentification$columns[4]]]),
+            y = logoddRatioFisher,
+            color = !!sym(type)
+        ),
+        size = 3
+    ) +
+        scale_color_npg() +
+        ggtitle(title)
+
+    return(volcano)
 }
 
 #' Get overall statistics from GeneDiscoveR object

@@ -573,3 +573,126 @@ get_complete_table <- function(GeneDiscoveRobject = NULL) {
     result <- GeneDiscoveRobject$RunActive$N0Active[, -which(names(GeneDiscoveRobject$RunActive$N0Active) %in% excludecols)]
     return(result)
 }
+
+
+#' Obtain OG from Gene
+#'
+#' This function retrieves the OG (Orthogroup) and Gene Tree Parent Clade for a given GeneID and SpeciesID.
+#' It takes a GeneDiscoveR object, a GeneID, and a SpeciesID as input and returns a data frame containing the OG, Gene Tree Parent Clade, and GeneID for the matching GeneID and SpeciesID.
+#' If no matching GeneID and SpeciesID are found, the function returns NA for the OG and Gene Tree Parent Clade.
+#' @param GeneDiscoveRobject The GeneDiscoveR object containing the complete table.
+#' @param GeneID A character vector of GeneIDs.
+#' @param SpeciesID A character vector of SpeciesIDs.
+#'
+#' @return A data frame containing the OG, Gene Tree Parent Clade, and GeneID for the matching GeneIDs and SpeciesIDs.
+#' @import dplyr
+#' @examples
+#' N0Dir <- system.file("extdata", "Brassicaceae", package = "GeneDiscoveR")
+#' dataTSV <- system.file("extdata", "Brassicaceae", "table_traits_selfcomp.tsv", package = "GeneDiscoveR")
+#'
+#' # Create a GeneDiscoveR object with Brassicaceae data from one execution of OrthoFinder
+#' # In this case, because we are unique execution, we use the uniqueInflation parameter and GeneDiscoveR set automatically the active run.
+#' GeneDiscoveRobject <- GeneDiscoveR(
+#'     N0sDir = N0Dir,
+#'     dataFile = dataTSV,
+#'     uniqueInflation = 1.5,
+#'     orthologsTool = "OrthoFinder"
+#' )
+#'
+#' # Select species by phenotype. You can perform this step with different phenotypes.
+#' GeneDiscoveRobject <- select_species_by_phenotype(
+#'     GeneDiscoveRobject = GeneDiscoveRobject,
+#'     columnPhenotype = "Self-compatible",
+#'     columnID = "OrthofinderID",
+#'     type = "0"
+#' )
+#' GeneDiscoveRobject <- select_species_by_phenotype(
+#'     GeneDiscoveRobject = GeneDiscoveRobject,
+#'     columnPhenotype = "Self-compatible",
+#'     columnID = "OrthofinderID",
+#'     type = "1"
+#' )
+#'
+#' # Identify genes by phenotype. You can perform this step with different phenotypes.
+#' GeneDiscoveRobject <- gene_identification_by_phenotype(
+#'     GeneDiscoveRobject = GeneDiscoveRobject,
+#'     formula = as.formula("1 ~ 0"),
+#'     statistic = "Fisher",
+#'     name = "Self-incompatible",
+#'     cores = 8
+#' )
+#' GeneDiscoveRobject <- select_genes_by_phenotype(GeneDiscoveRobject,
+#'     pvalue = 0.05,
+#'     oddsRatio = 1,
+#'     sign = ">",
+#'     name = "Self-incompatible"
+#' )
+#'
+#' # Set annotation file
+#' # Import Arabidopsis thaliana annotation file from TAIR10
+#' annotationFile <- system.file("extdata", "Brassicaceae", "TAIR10_functional_descriptions", package = "GeneDiscoveR")
+#'
+#' GeneDiscoveRobject <- set_annotation_file(GeneDiscoveRobject, annotationFile = annotationFile)
+#' indexFilteredGenes <- select_filtered_gene_index(GeneDiscoveRobject, name = "Self-incompatible", pvalue = 0.05, oddsRatio = 1, sign = ">")
+#'
+#' # Map annotation to the filtered genes. indexFilteredGenes is the index of the filtered genes, if NULL, the annotation is mapped to the complete table
+#' GeneDiscoveRobject <- map_annotation(
+#'     GeneDiscoveRobject = GeneDiscoveRobject,
+#'     indexFilteredGenes = indexFilteredGenes,
+#'     specieWithAnnotation = "Athaliana_447_Araport11.protein_primaryTranscriptOnly",
+#'     oneColumn = FALSE
+#' )
+#'
+#' # Show the filtered genes table
+#' head(get_filtered_genes_table(GeneDiscoveRobject, name = "Self-incompatible", pvalue = 0.05, oddsRatio = 1, sign = ">"))
+#'
+#' # OG of the gene AT5G44220.1
+#' GeneID <- c("AT5G44220.1")
+#' OrthoFinderID <- c("Athaliana_447_Araport11.protein_primaryTranscriptOnly")
+#' AT5G44220_OG <- obtain_OG_from_gene(GeneDiscoveRobject, GeneID, OrthoFinderID)
+#' AT5G44220_OG # Identify the Orthologous Group (OG) of the gene
+#'
+#' @export
+obtain_OG_from_gene <- function(GeneDiscoveRobject, GeneID = NULL, SpeciesID = NULL) {
+    if (is.null(GeneDiscoveRobject$RunActive$N0Active)) {
+        stop("Error: 'Run active in GeneDiscoveRobject is missing.")
+    }
+    if (is.null(GeneID) || is.null(SpeciesID)) {
+        stop("Error: 'GeneID' or 'SpeciesID' is NULL.")
+    }
+    if (length(GeneID) != length(SpeciesID)) {
+        stop("Error: 'GeneID' and 'SpeciesID' have different lengths.")
+    }
+    completeTable <- get_complete_table(GeneDiscoveRobject)
+    result <- NULL
+    result <- completeTable %>%
+        rowwise() %>%
+        filter(str_detect(pattern = GeneID[1], across(OrthoFinderID[1]))) %>%
+        select(OG, `Gene Tree Parent Clade`)
+    if (!dim(result)[1] == 0) {
+        result <- result %>% mutate(GeneID = GeneID[1])
+    } else {
+        result <- data.frame(OG = NA, `Gene Tree Parent Clade` = NA, GeneID = GeneID[1])
+    }
+    colnames(result) <- c("OG", "Gene Tree Parent Clade", "GeneID")
+    resultTable <- result
+
+    if (length(GeneID) > 1) {
+        result <- NULL
+        for (i in 2:length(GeneID)) {
+            result <- completeTable %>%
+                rowwise() %>%
+                filter(str_detect(pattern = GeneID[i], across(OrthoFinderID[i]))) %>%
+                select(OG, `Gene Tree Parent Clade`)
+            if (!dim(result)[1] == 0) {
+                result <- result %>% mutate(GeneID = GeneID[i])
+            } else {
+                result <- data.frame(OG = NA, `Gene Tree Parent Clade` = NA, GeneID = GeneID[i])
+            }
+            colnames(result) <- c("OG", "Gene Tree Parent Clade", "GeneID")
+
+            resultTable <- bind_rows(resultTable, result)
+        }
+    }
+    return(resultTable)
+}
