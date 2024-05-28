@@ -585,7 +585,7 @@ get_complete_table <- function(GeneDiscoveRobject = NULL) {
 #' @param SpeciesID A character vector of SpeciesIDs.
 #'
 #' @return A data frame containing the OG, Gene Tree Parent Clade, and GeneID for the matching GeneIDs and SpeciesIDs.
-#' @import dplyr
+#' @import dplyr stringr
 #' @examples
 #' N0Dir <- system.file("extdata", "Brassicaceae", package = "GeneDiscoveR")
 #' dataTSV <- system.file("extdata", "Brassicaceae", "table_traits_selfcomp.tsv", package = "GeneDiscoveR")
@@ -644,7 +644,7 @@ get_complete_table <- function(GeneDiscoveRobject = NULL) {
 #' )
 #'
 #' # Show the filtered genes table
-#' head(get_filtered_genes_table(GeneDiscoveRobject, name = "Self-incompatible", pvalue = 0.05, oddsRatio = 1, sign = ">"))
+#' get_filtered_genes_table(GeneDiscoveRobject, name = "Self-incompatible", pvalue = 0.05, oddsRatio = 1, sign = ">")
 #'
 #' # OG of the gene AT5G44220.1
 #' GeneID <- c("AT5G44220.1")

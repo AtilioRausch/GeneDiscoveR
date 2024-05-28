@@ -61,7 +61,8 @@ plot_genediscover_detector_volcano(GeneDiscoveRobject, annotationTable = TPSgene
 # Volcano plot with TPS genes
 
 # Output: A ggplot object representing the volcano plot.
-#' @seealso
+}
+\seealso{
 \code{\link{GeneDiscoveR}}
 \code{\link{plot_genediscover_volcano}}
 \code{\link{run_genediscover_web_app}}

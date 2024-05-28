@@ -252,14 +252,13 @@ plot_genediscover_volcano <- function(GeneDiscoveRobject = NULL, name = NULL) {
 #' # Volcano plot with TPS genes
 #'
 #' # Output: A ggplot object representing the volcano plot.
-#' #' @seealso
+#' @seealso
 #' \code{\link{GeneDiscoveR}}
 #' \code{\link{plot_genediscover_volcano}}
 #' \code{\link{run_genediscover_web_app}}
 #' @import ggplot2 dplyr ggsci
 #' @export
 plot_genediscover_detector_volcano <- function(GeneDiscoveRobject = NULL, annotationTable = NULL, name = NULL, title = "", type = "TPStype", categories = c("Diterpene", "Bacterial", "Fungi")) {
-    
     if (is.null(GeneDiscoveRobject) || is.null(annotationTable) || is.null(name)) {
         stop("Error: 'GeneDiscoveRobject', 'annotationTable' and 'name' cannot be NULL.")
     }

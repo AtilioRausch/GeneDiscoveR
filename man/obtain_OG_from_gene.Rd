@@ -79,7 +79,7 @@ GeneDiscoveRobject <- map_annotation(
 )
 
 # Show the filtered genes table
-head(get_filtered_genes_table(GeneDiscoveRobject, name = "Self-incompatible", pvalue = 0.05, oddsRatio = 1, sign = ">"))
+get_filtered_genes_table(GeneDiscoveRobject, name = "Self-incompatible", pvalue = 0.05, oddsRatio = 1, sign = ">")
 
 # OG of the gene AT5G44220.1
 GeneID <- c("AT5G44220.1")
