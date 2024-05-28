@@ -109,10 +109,16 @@
     <loc>/reference/map_annotation.html</loc>
   </url>
   <url>
+    <loc>/reference/obtain_OG_from_gene.html</loc>
+  </url>
+  <url>
     <loc>/reference/plot_OGs_HOGs_per_inflation.html</loc>
   </url>
   <url>
     <loc>/reference/plot_allSpeciesOGs_sOGs_per_inflation.html</loc>
+  </url>
+  <url>
+    <loc>/reference/plot_genediscover_detector_volcano.html</loc>
   </url>
   <url>
     <loc>/reference/plot_genediscover_volcano.html</loc>
