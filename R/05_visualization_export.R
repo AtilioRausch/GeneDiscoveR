@@ -244,8 +244,10 @@ plot_genediscover_volcano <- function(GeneDiscoveRobject = NULL, name = NULL) {
 #' # Gene identification by phenotype
 #' GeneDiscoveRobject <- gene_identification_by_phenotype(GeneDiscoveRobject = GeneDiscoveRobject, formula = as.formula("many_in_all_cells ~ one_in_specialized_cell"), statistic = "Fisher", name = "PerType", cores = 8)
 #'
+#' library(readr)
+#'
 #' # Load the TPS genes
-#' TPSgenes <- read.table(system.file("extdata", "TPSgenes.tsv", package = "GeneDiscoveR"), header = T, sep = "\t")
+#' TPSgenes <- read_tsv(system.file("extdata", "TPSgenes.tsv", package = "GeneDiscoveR"), col_names = TRUE)
 #' TPScategories <- c("Diterpene", "Bacterial", "Fungi")
 #' title <- "Fisher's Exact Test per Type of Oil-body with TPS genes"
 #' plot_genediscover_detector_volcano(GeneDiscoveRobject, annotationTable = TPSgenes, title = title, name = "PerType", type = "TPStype", categories = TPScategories)

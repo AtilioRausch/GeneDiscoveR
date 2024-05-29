@@ -24,6 +24,6 @@ Mmaritima	Mmaritima_477_v1.1.protein_primaryTranscriptOnly	0	1	0
 Mperfoliatum	Mperfoliatum_583_v2.1.protein_primaryTranscriptOnly	0	0	0
 Rislandica	Rislandica_473_v1.1.protein_primaryTranscriptOnly	0	0	0
 Salba	Salba_584_v3.1.protein_primaryTranscriptOnly	0	0	0
-Sparvula	Sparvula_574_v2.2.protein_primaryTranscriptOnly	1	0	1read.table(dataFile, header = T, sep = "\t")
+Sparvula	Sparvula_574_v2.2.protein_primaryTranscriptOnly	1	0	1
 Spinnata	Spinnata_486_v1.1.protein_primaryTranscriptOnly	0	0	0
 Tarvense	Tarvense_479_v1.1.protein_primaryTranscriptOnly	0	0	0

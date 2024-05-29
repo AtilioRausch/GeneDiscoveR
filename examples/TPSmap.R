@@ -95,7 +95,7 @@ GeneDiscoveRobject <- gene_identification_by_phenotype(
 GeneDiscoveRobject <- select_genes_by_phenotype(GeneDiscoveRobject,
   pvalue = 0.05,
   oddsRatio = 1,
-  sign = ">=",
+  sign = ">",
   name = "PerType"
 )
 
@@ -105,7 +105,7 @@ annotationFile <- system.file("extdata", "MpTak_v6.1_func_annotation_1line.tsv",
 GeneDiscoveRobject <- set_annotation_file(GeneDiscoveRobject, annotationFile = annotationFile)
 
 # Select filtered gene index
-indexFilteredGenes <- select_filtered_gene_index(GeneDiscoveRobject, name = "PerType", pvalue = 0.05, oddsRatio = 1, sign = ">=")
+indexFilteredGenes <- select_filtered_gene_index(GeneDiscoveRobject, name = "PerType", pvalue = 0.05, oddsRatio = 1, sign = ">")
 
 # Map annotation to the filtered genes. indexFilteredGenes is the index of the filtered genes, if NULL, the annotation is mapped to the complete table
 GeneDiscoveRobject <- map_annotation(
@@ -115,7 +115,7 @@ GeneDiscoveRobject <- map_annotation(
   oneColumn = TRUE
 )
 # Obtain the filtered genes table with annotation
-filteredTable <- get_filtered_genes_table(GeneDiscoveRobject, name = "PerType", pvalue = 0.05, oddsRatio = 1, sign = ">=")
+filteredTable <- get_filtered_genes_table(GeneDiscoveRobject, name = "PerType", pvalue = 0.05, oddsRatio = 1, sign = ">")
 
 # Map annotation to the complete table. indexFilteredGenes is NULL
 GeneDiscoveRobject <- map_annotation(
