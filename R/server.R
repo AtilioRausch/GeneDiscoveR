@@ -16,7 +16,7 @@
 #' }
 #' @import shinydashboard
 #' @importFrom DT renderDT datatable
-#' @importFrom plotly renderPlotly ggplotly event_data
+#' @importFrom plotly renderPlotly ggplotly event_data toWebGL
 #' @export
 .server_genediscover <- function(input, output, session) {
     options(warn = -1)
@@ -145,31 +145,30 @@
             showNotification("Success: The GeneDiscoveR object and the identification name were entered correctly. Please wait a moment!.", type = "message", duration = 10)
 
             data <- data %>%
-            mutate(
-                "contains-gene" = rowSums(sapply(splitGenes, function(gene) apply(data, 1, function(row) any(grepl(gene, row))))) > 0
-            )
-            
+                mutate(
+                    "contains-gene" = rowSums(sapply(splitGenes, function(gene) apply(data, 1, function(row) any(grepl(gene, row))))) > 0
+                )
+
             data$original_index <- seq_len(nrow(data))
             suppressMessages(write_tsv(data[data$`contains-gene` == TRUE, ], file = paste0(tempdir(), "/data-select.tmp")))
             suppressMessages(write_tsv(data[data$`contains-gene` == FALSE, ], file = paste0(tempdir(), "/data-unselect.tmp")))
 
             if (any(data$`contains-gene` == TRUE)) {
-            output$plot <- renderPlotly({
-                g1 <- ggplot(data = data) +
-                geom_point(aes(x = -log(`p-value`), y = `log-odds-ratio`, color = factor(`contains-gene`, labels = c("No", "Yes")))) +
-                coord_flip() +
-                geom_hline(yintercept = 0, linetype = "dotted", col = "black") +
-                geom_vline(xintercept = 2.9957, linetype = "dotted", col = "black") +
-                annotate("text", x = 3.1, y = 1, label = "p-value <= 0.05", vjust = 1.5, color = "black") +
-                annotate("text", x = 8, y = 1, label = "Odds Ratio >= 1", color = "black") +
-                ylab("log(Odds Ratio)") +
-                xlab("-log(p-value)") +
-                scale_color_jama() +
-                guides(color = guide_legend(title = "Selected"))
-                p <- ggplotly(g1, source = "volcano", dynamicTicks = TRUE) %>% toWebGL()
-            })
+                output$plot <- renderPlotly({
+                    g1 <- ggplot(data = data) +
+                        geom_point(aes(x = -log(`p-value`), y = `log-odds-ratio`, color = factor(`contains-gene`, labels = c("No", "Yes")))) +
+                        coord_flip() +
+                        geom_hline(yintercept = 0, linetype = "dotted", col = "black") +
+                        geom_vline(xintercept = 2.9957, linetype = "dotted", col = "black") +
+                        annotate("text", x = 3.1, y = 1, label = "p-value <= 0.05", vjust = 1.5, color = "black") +
+                        annotate("text", x = 8, y = 1, label = "Odds Ratio >= 1", color = "black") +
+                        ylab("log(Odds Ratio)") +
+                        xlab("-log(p-value)") +
+                        scale_color_jama() +
+                        guides(color = guide_legend(title = "Selected"))
+                    p <- ggplotly(g1, source = "volcano", dynamicTicks = TRUE) %>% toWebGL()
+                })
             }
         }
-})
+    })
 }
-
