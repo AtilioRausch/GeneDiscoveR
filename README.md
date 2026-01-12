@@ -53,6 +53,15 @@ indicated in the pipeline:
 The pipeline of `GeneDiscoveR` is illustrated in the following figure.
 <img src="man/figures/geneDiscover.png" align="center"/>
 
+### GeneDiscoveR protocol
+
+A detailed description of the GeneDiscoveR comparative genomics workflow is available in:
+
+Rausch, A.O. et al. (2026).  
+*Comparative Genomics Using GeneDiscoveR: A Toolbox for the Identification of Gene Candidates Associated with Plant Traits.*  
+Methods in Molecular Biology, vol. 2985.  
+👉 https://doi.org/10.1007/978-1-0716-4972-5_16
+
 ## Installation instructions
 
 Get the latest stable `R` release from
@@ -104,30 +113,9 @@ example on
 
 ## Citation
 
-Below is the citation output from using `citation('GeneDiscoveR')` in R.
-Please run this yourself to check for any updates on how to cite
-**GeneDiscoveR**.
-
-``` r
-print(citation("GeneDiscoveR"), bibtex = TRUE)
-#> To cite package GeneDiscoveR in publications use:
-#> 
-#>   Rausch, Atilio O, et. al (2024). GeneDiscoveR: an R package for the
-#>   statistical detection of orthogroups associated to plant traits. R
-#>   package version 1.0.0. URL
-#>   https://github.com/tu_nombre_de_usuario/miPaquete
-#> 
-#> A BibTeX entry for LaTeX users is
-#> 
-#>   @Manual{,
-#>     title = {GeneDiscoveR: an R package for the statistical detection of orthogroups associated to plant traits.},
-#>     author = {Atilio O. Rausch},
-#>     year = {224},
-#>     note = {R package version 1.0.0},
-#>     url = {https://github.com/AtilioRausch/GeneDiscoveR},
-#>   }
-```
-
-Please note that `GeneDiscoveR` was only made possible thanks to many
-other R and bioinformatics software authors. `GeneDiscoveR` is waiting
-for publication, and we will provide the DOI as soon as possible.
+Rausch, A.O. et al. (2026).  
+**Comparative Genomics Using GeneDiscoveR: A Toolbox for the Identification of Gene Candidates Associated with Plant Traits.**  
+In: Franco-Zorrilla, J.M., Martín-Pizarro, C. (eds) *Plant Transcription Factors*.  
+Methods in Molecular Biology, vol. 2985.  
+Humana Press, New York, NY.  
+https://doi.org/10.1007/978-1-0716-4972-5_16
